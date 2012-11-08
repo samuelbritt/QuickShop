@@ -23,6 +23,7 @@ class AisleGraph(object):
         self.add_node_labels()
         self.add_edge_weights()
         self.node = self.G.node
+        self.edge = self.G.edge
 
     def add_edge_weights(self):
         for u,v in self.G.edges():
@@ -108,9 +109,8 @@ class DualGraph(object):
         for edge in self.aisle_graph.edges():
             self.add_dual_node(edge)
 
-    def add_dual_node(self, edge):
-        s, t = edge
-        slabel = self.aisle_graph.node[s]['label']
+    def add_dual_node(self, primal_edge):
+        s, t = primal_edge
         label = "[{}{}]".format(
             self.aisle_graph.node[s]['label'],
             self.aisle_graph.node[t]['label']
@@ -129,15 +129,43 @@ class DualGraph(object):
         return n0[1] == n1[0]
 
     def add_dual_edge(self, s, t):
-        label = "({}{})".format(
-            self.dual_graph.node[s]['label'].strip('[]'),
-            self.dual_graph.node[t]['label'].strip('[]')[2:],
+        start, mid, end = self.edge_to_primal_nodes((s, t))
+        label = "({}{}{})".format(
+            self.aisle_graph.node[start]['label'],
+            self.aisle_graph.node[mid]['label'],
+            self.aisle_graph.node[end]['label'],
         )
-        self.dual_graph.add_edge(s, t, label=label)
+        weight = self.dual_edge_weight(s, t)
+        self.dual_graph.add_edge(s, t,
+                                 label=(label + str(weight)),
+                                 weight=weight)
+
+    def dual_edge_weight(self, s, t):
+        """ returns the weight of a dual edge, based on the corresponding
+        primal edge weights """
+        ws = self.node_to_primal_edge(s)[-1]['weight']
+        wt = self.node_to_primal_edge(t)[-1]['weight']
+        return (ws + wt) / 2.
+
+    def node_to_primal_edge(self, dual_node):
+        """ returns the edge (with data) in the primal graph that corresponds
+        to the dual node """
+        s, t = dual_node
+        return s, t, self.aisle_graph.edge[s][t]
+
+    def edge_to_primal_nodes(self, dual_edge):
+        """ returns the three primal nodes (with data) that corresond to a
+        single dual edge """
+        s, t = dual_edge
+        start, mid0, attr = self.node_to_primal_edge(s)
+        mid1, end, attr = self.node_to_primal_edge(t)
+        assert mid0 == mid1
+        return start, mid0, end
 
     def draw(self, filename, node_labels=True):
         A = nx.to_agraph(self.dual_graph)
         A.edge_attr.update(fontsize = 9,
+                           arrowhead = "vee",
                            constraint = False)
 
         A.graph_attr.update(overlap = False,
@@ -149,21 +177,6 @@ class DualGraph(object):
                                fixedsize = True,)
         else:
             A.node_attr['shape'] = 'point'
-
-        # nodes_per_aisle = self.aisle_graph.nodes_per_aisle
-        # aisle_count = self.aisle_graph.aisle_count
-        # vertical_subgraph = []
-        # for l in range(nodes_per_aisle):
-        #     vertical_subgraph.append(((0, l), (0, l+1)))
-        #     subgraph = []
-        #     for a in range(aisle_count):
-        #             subgraph.extend([((a, l), (a, l+1)),
-        #                              ((a, l+1), (a, l))])
-        #     S = A.add_subgraph(subgraph, rank="same")
-        #     S = A.add_subgraph(vertical_subgraph, rank="sink", rank_dir="LR")
-
-        # for a in range(aisle_count):
-        #     pass
 
         A.draw(filename, prog='neato')
         return A
