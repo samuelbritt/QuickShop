@@ -168,7 +168,8 @@ class DualGraph(object):
                            arrowhead = "vee",
                            constraint = False)
 
-        A.graph_attr.update(overlap = False,
+        A.graph_attr.update(dpi = 250,
+                            overlap = False,
                             splines = True)
         if node_labels:
             A.node_attr.update(shape = 'circle',
