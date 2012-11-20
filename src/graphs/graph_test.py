@@ -2,6 +2,159 @@
 
 import networkx as nx
 import matplotlib.pyplot as plt
+from functools import total_ordering
+
+@total_ordering
+class AisleGraphPrimalNode(object):
+    """ Nodes in the primal (directed) aisle graph. """
+
+    def __init__(self, x, y, sentinal=None):
+        """ x, y are coordinates in AisleGraph. Set `sentinal` to True if this
+        is a sentinal node. """
+        self.x = x
+        self.y = y
+        assert sentinal in (None, "source", "sink")
+        self.sentinal = sentinal
+        self.label = sentinal or "{}, {}".format(self.x, self.y)
+        self.adjacencies = []
+
+    def add_adjacency(self, node):
+        self.adjacencies.append(node)
+
+    def __repr__(self):
+        return "[{}]".format(self.label)
+
+    # Make object hashable
+    def __key(self):
+        return (self.x, self.y)
+    def __eq__(self, other):
+        return self.__key() == other.__key()
+    def __lt__(self, other):
+        return self.__key() < other.__key()
+    def __hash__(self):
+        return hash(self.__key())
+
+class AisleGraphSource(AisleGraphPrimalNode):
+    def __init__(self):
+        AisleGraphPrimalNode.__init__(self, -1, -1, sentinal="source")
+        self.label = "s"
+class AisleGraphSink(AisleGraphPrimalNode):
+    def __init__(self):
+        AisleGraphPrimalNode.__init__(self, -1, -1, sentinal="sink")
+        self.label = "t"
+
+@total_ordering
+class AisleGraphPrimalEdge(object):
+    """ Edge in the primal (directed) aisle graph. """
+
+    def __init__(self, n1, n2):
+        """ creates an edge from node n1 to node n2
+        """
+        self.start = n1
+        self.end = n2
+        self.is_aisle = self.start.x == self.end.x
+        self.weight = self._weight()
+        self.start.add_adjacency(end)
+
+    def _weight(self):
+        weight = 1
+        if self.start.sentinal or self.end.sentinal:
+            weight = 0
+        return weight
+
+    def __repr__(self):
+        return repr((self.start, self.end))
+
+    # Make object hashable
+    def __key(self):
+        return (self.start, self.end)
+    def __eq__(self, other):
+        return self.__key() == other.__key()
+    def __lt__(self, other):
+        return self.__key() < other.__key()
+    def __hash__(self):
+        return hash(self.__key())
+
+@total_ordering
+class AisleGraphDualNode(object):
+    """ Nodes in the linear dual aisle graph. """
+    def __init__(self, primal_edge):
+        """ creates a dual node corresponding to a primal_edge """
+        self.edge = primal_edge
+        self.is_aisle = self.edge.is_aisle
+
+    def primal_edge(self):
+        """ returns primal edge corresponding to this node """
+        return self.edge
+
+    def __repr__(self):
+        return repr(self.edge)
+
+    # Make object hashable
+    def __key(self):
+        return self.edge
+    def __eq__(self, other):
+        return self.__key() == other.__key()
+    def __lt__(self, other):
+        return self.__key() < other.__key()
+    def __hash__(self):
+        return hash(self.__key())
+
+class DualAngles(object):
+    """ enum for angles in dual graph """
+    ZERO = 0
+    PI2 = 1
+    PI = 2
+
+@total_ordering
+class AisleGraphDualEdge(object):
+    """ Edges in linear dual aisle graph. """
+
+    def __init__(self, n1, n2):
+        """ Creates a dual edge from node n1 to n2
+        """
+        self.start = n1
+        self.end = n2
+        self.angle = self._angle()
+        self.weight = self._weight()
+
+    def _angle(self):
+        if self.start.is_aisle != self.end.is_aisle:
+            # right angle
+            return DualAngles.PI2
+        elif self.start.start == self.end.end:
+            # U-turn
+            return DualAngles.PI
+        else:
+            return DualAngles.ZERO
+
+    def _weight(self):
+        return ((self.start.weight + self.end.weight) / 2. 
+                + self._weight_of_angle(self.angle))
+
+    def _weight_of_angle(self, dual_angle):
+        """ returns weight associated with given angle """
+        # favor right angles, penalize u-turns
+        weights = {
+            DualAngles.ZERO: 2,
+            DualAngles.PI2: 1,
+            DualAngles.PI: 5
+        }
+        return weights[dual_angle]
+
+    def __repr__(self):
+        return repr((self.start, self.end))
+
+    # Make object hashable
+    def __key(self):
+        return (self.start, self.end)
+    def __eq__(self, other):
+        return self.__key() == other.__key()
+    def __lt__(self, other):
+        return self.__key() < other.__key()
+    def __hash__(self):
+        return hash(self.__key())
+
 
 class AisleGraph(object):
     """ Graph for grocery store aisles """
@@ -10,65 +163,70 @@ class AisleGraph(object):
         self.aisle_count = aisle_count
         self.nodes_per_aisle = nodes_per_aisle
 
-        self.U = nx.grid_2d_graph(aisle_count, nodes_per_aisle)
-        # remove generated edges between mid-aisle nodes
-        for i in range(aisle_count - 1):
-            for j in range(1, nodes_per_aisle - 1):
-                self.U.remove_edge((i,j), (i+1,j))
-
-        end = end or (aisle_count - 1, 0)
-        self.G = self.U.to_directed()
-        self.source = self.sink = None
-        self.add_sentinals(start, end)
-        self.add_node_labels()
-        self.add_edge_weights()
+        self.G = nx.DiGraph()
+        self.create_graph(start, end)
         self.node = self.G.node
         self.edge = self.G.edge
 
-    def add_edge_weights(self):
-        for u,v in self.G.edges():
-            w = self.edge_weight(u,v)
-            self.G[u][v].update(weight=w, label=w)
+    def edges(self, *args, **kwargs):
+        return sorted(self.G.edges(*args, **kwargs))
+    def nodes(self, *args, **kwargs):
+        return sorted(self.G.nodes(*args, **kwargs))
 
-    def add_node_labels(self):
-        for node in self.G.nodes():
-            if self.is_sentinal(node):
-                self.G.node[node].update(label=node)
-            else:
-                self.G.node[node].update(label="{}{}".format(node[0], node[1]))
+    def create_graph(self, start, end=None):
+        self.create_aisle(0)
+        for x in range(1, self.aisle_count):
+            self.create_aisle(x)
+            self.connect_aisles(x - 1, x)
 
-    def edge_weight(self, u, v):
-        """ returns weight of edge between nodes u and v """
-        weight = 0
-        if self.is_sentinal(u, v):
-            weight = 0
-        elif self.co_aisle(u, v):
-            weight = 1
-        else:
-            weight = 2
-        return weight
+        end = end or (self.aisle_count - 1, 0)
+        self.add_sentinals(start, end)
+        self.add_node_labels()
+
+    def create_aisle(self, x_coord):
+        """ creates an aisle of nodes at x coordinate x_coord. 
+        """
+        n1 = AisleGraphPrimalNode(x_coord, 0)
+        for y in range(1, self.nodes_per_aisle):
+            n2 = AisleGraphPrimalNode(x_coord, y)
+            self.create_double_edge(n1, n2)
+            n1 = n2
+
+    def connect_aisles(self, x1, x2):
+        """ Connects top and bottom nodes of aisles at x1 and x2 """
+        for y in (0, self.nodes_per_aisle - 1):
+            n1 = AisleGraphPrimalNode(x1, y)
+            n2 = AisleGraphPrimalNode(x2, y)
+            assert (n1 in self.nodes())
+            assert (n2 in self.nodes())
+            self.create_double_edge(n1, n2)
+
+    def create_double_edge(self, n1, n2):
+        """ creates edges (n1, n2) and (n2, n1) """
+        forward = n1, n2
+        reverse = n2, n1
+        for direction in (forward, reverse):
+            self.create_single_edge(*direction)
+
+    def create_single_edge(self, n1, n2):
+            e = AisleGraphPrimalEdge(n1, n2)
+            w = e.weight
+            self.G.add_edge(n1, n2, object=e, weight=w, label=w)
 
     def add_sentinals(self, start, end):
         """ adds the dummy source node going to `start`, and the dummy sink
         node going to `end` """
-        self.source = "ss"
-        self.sink = "tt"
+        self.source = AisleGraphSource()
+        self.sink = AisleGraphSink()
+
+        start = AisleGraphPrimalNode(*start)
+        end = AisleGraphPrimalNode(*end)
         for edge in ((self.source, start), (end, self.sink)):
-            self.G.add_edge(*edge, weight=0)
+            self.create_single_edge(*edge)
 
-
-    def is_sentinal(self, *nodes):
-        """ returns True if any node in `node_list` is a sentinal """
-        sentinals = (self.source, self.sink)
-        for n in nodes:
-            if n in sentinals:
-                return True
-        return False
-
-    def co_aisle(self, u, v):
-        """ returns True if nodes u and v are on the same aisle """
-        return not self.is_sentinal(u,v) and u[0] == v[0]
-        
+    def add_node_labels(self):
+        for node in self.G.nodes():
+            self.G.node[node].update(label=repr(node))
 
     def draw(self, filename, node_labels=True):
         A = nx.to_agraph(self.G)
@@ -80,15 +238,9 @@ class AisleGraph(object):
         else:
             A.node_attr['shape'] = 'point'
         for node in self.G:
-            if not self.is_sentinal(node):
-                n = A.get_node(node)
-                n.attr.update(pos = "{},{}!".format(node[0], node[1]))
+            n = A.get_node(node)
+            n.attr.update(pos = "{},{}!".format(node.x, node.y))
         A.draw(filename, prog='neato')
-
-    def edges(self, *args, **kwargs):
-        return sorted(self.G.edges(*args, **kwargs))
-    def nodes(self, *args, **kwargs):
-        return sorted(self.G.nodes(*args, **kwargs))
 
 
 class DualGraph(object):
@@ -106,18 +258,21 @@ class DualGraph(object):
         self.add_dual_edges()
 
     def add_dual_nodes(self):
-        for edge in self.aisle_graph.edges():
-            self.add_dual_node(edge)
-
-    def add_dual_node(self, primal_edge):
-        s, t = primal_edge
-        label = "[{}{}]".format(
-            self.aisle_graph.node[s]['label'],
-            self.aisle_graph.node[t]['label']
-        )
-        self.dual_graph.add_node((s,t), label=label)
+        for edge in self.aisle_graph.edges(data=True):
+            primal_edge = edge[2]['object']
+            dual_node = AisleGraphDualNode(primal_edge)
+            self.dual_graph.add_node(dual_node, label=str(dual_node))
 
     def add_dual_edges(self):
+        for node in self.dual_graph.nodes():
+            primal_edge_1 = node.primal_edge
+            primal_edge_end = primal_edge_1.end
+            for adj in end.adjacencies:
+                # TODO
+                # need a way to find, given two primal nodes n1, n2 in Vp, the
+                # node v12 in Vd that corresponds to the edge (n1 -> n2) in Ep
+
+
         for node_0  in self.dual_graph.nodes():
             for node_1 in self.dual_graph.nodes():
                 if self.are_adjacent(node_0, node_1):
@@ -205,9 +360,9 @@ if __name__ == '__main__':
     # node_positions = dict(zip(G,G))
 
     G.draw('G.png')
-
     D = DualGraph(G)
-    A = D.draw('D.png')
+
+    # A = D.draw('D.png')
 
     # for i, (f, l) in enumerate(H.edges()):
     #     H.edge[f][l]['id'] = i
