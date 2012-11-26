@@ -6,6 +6,11 @@ import java.util.PriorityQueue;
  */
 
 /**
+ * For a provided directed graph G and source node `s` in G, will find the
+ * shortest path from `s` to every other node in G. Holds a list of all nodes in
+ * G, each with the the distance from `s` to the node, and the predecessor node
+ * on the path.
+ * 
  * @author sam
  * 
  */
@@ -14,7 +19,7 @@ public abstract class SingleSourceShortestPathFinder<T extends Node> {
 	private Node source;
 	private PriorityQueue<AugmentedNode> pathList;
 	private HashMap<Node, AugmentedNode> nodeToAugmented;
-	
+
 	public SingleSourceShortestPathFinder() {
 		this.graph = null;
 		this.source = null;
@@ -30,16 +35,39 @@ public abstract class SingleSourceShortestPathFinder<T extends Node> {
 
 		initialize();
 	}
-	
-	/* Algorithm to run the single pairs shortest path algorithm */
+
+	/** Algorithm to run the single pairs shortest path algorithm */
 	abstract void run();
+
+	/** Given a node in G, returns the corresponding AugmentedNode */
+	public AugmentedNode getAugmentedNode(Node node) {
+		return nodeToAugmented.get(node);
+	}
+
+	/** returns the source node for all the stored paths */
+	public Node getSource() {
+		return source;
+	}
+
+	/** removes and returns the AugmentedNode with the shortest path from the source node */
+	public AugmentedNode removeMin() {
+		return pathList.poll();
+	}
+
+	public boolean isEmpty() {
+		return pathList.isEmpty();
+	}
+
+	public int nodeCount() {
+		return pathList.size();
+	}
 	
 	private void initialize() {
 		for (Node node : this.graph.getNodes()) {
 			addNewAugmentedNode(node);
 		}
 	}
-	
+
 	private AugmentedNode addNewAugmentedNode(Node node) {
 		AugmentedNode augNode = new AugmentedNode(node);
 		augNode.setInfPath();
@@ -50,28 +78,5 @@ public abstract class SingleSourceShortestPathFinder<T extends Node> {
 		nodeToAugmented.put(node, augNode);
 		return augNode;
 	}
-	
-	public AugmentedNode getAugmentedNode(Node node) {
-		return nodeToAugmented.get(node);
-	}
 
-	public Graph<T> getGraph() {
-		return graph;
-	}
-
-	public Node getSource() {
-		return source;
-	}
-	
-	public AugmentedNode removeMin() {
-		return pathList.poll();
-	}
-	
-	public boolean isEmpty() {
-		return pathList.isEmpty();
-	}
-	
-	public int nodeCount() {
-		return pathList.size();
-	}
 }
