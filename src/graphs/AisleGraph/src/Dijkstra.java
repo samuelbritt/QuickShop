@@ -13,7 +13,7 @@ public class Dijkstra<T extends Node> extends SingleSourceShortestPathFinder<T> 
 	}
 
 	@Override
-	void run() {
+	void findShortestPaths() {
 		while (!this.isEmpty()) {
 			AugmentedNode u = this.removeMin();
 			solvedPaths.add(u);

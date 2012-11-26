@@ -37,7 +37,7 @@ public abstract class SingleSourceShortestPathFinder<T extends Node> {
 	}
 
 	/** Algorithm to run the single pairs shortest path algorithm */
-	abstract void run();
+	abstract void findShortestPaths();
 
 	/** Given a node in G, returns the corresponding AugmentedNode */
 	public AugmentedNode getAugmentedNode(Node node) {
@@ -69,13 +69,18 @@ public abstract class SingleSourceShortestPathFinder<T extends Node> {
 	}
 
 	private AugmentedNode addNewAugmentedNode(Node node) {
+		AugmentedNode augNode = createAugmentedNode(node);
+		pathList.add(augNode);
+		nodeToAugmented.put(node, augNode);
+		return augNode;
+	}
+	
+	private AugmentedNode createAugmentedNode(Node node) {
 		AugmentedNode augNode = new AugmentedNode(node);
 		augNode.setInfPath();
 		if (node.equals(source)) {
 			augNode.setShortestPathEstimate(0);
 		}
-		pathList.add(augNode);
-		nodeToAugmented.put(node, augNode);
 		return augNode;
 	}
 

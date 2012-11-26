@@ -50,7 +50,7 @@ public class DijkstraTest {
 		G.createSingleEdge(n.get(4), n.get(0), 7);
 
 		Dijkstra<SimpleNode> dij = new Dijkstra<SimpleNode>(G, n.get(0));
-		dij.run();
+		dij.findShortestPaths();
 		
 		checkPredAndPath(dij, n, 4, 2, 7);
 		checkPredAndPath(dij, n, 2, 0, 5);
