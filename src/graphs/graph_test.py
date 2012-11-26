@@ -54,7 +54,7 @@ class AisleGraphPrimalEdge(object):
         self.end = n2
         self.is_aisle = self.start.x == self.end.x
         self.weight = self._weight()
-        self.start.add_adjacency(end)
+        self.start.add_adjacency(self.end)
 
     def _weight(self):
         weight = 1
@@ -264,19 +264,18 @@ class DualGraph(object):
             self.dual_graph.add_node(dual_node, label=str(dual_node))
 
     def add_dual_edges(self):
-        for node in self.dual_graph.nodes():
-            primal_edge_1 = node.primal_edge
-            primal_edge_end = primal_edge_1.end
-            for adj in end.adjacencies:
-                # TODO
-                # need a way to find, given two primal nodes n1, n2 in Vp, the
-                # node v12 in Vd that corresponds to the edge (n1 -> n2) in Ep
+        for first_dual_node in self.dual_graph.nodes():
+            primal_edge_1 = first_dual_node.primal_edge()
+            end_node = primal_edge_1.end
+            for adj in end_node.adjacencies:
+                primal_edge_2 = AisleGraphPrimalEdge(end_node, adj)
 
-
-        for node_0  in self.dual_graph.nodes():
-            for node_1 in self.dual_graph.nodes():
-                if self.are_adjacent(node_0, node_1):
-                    self.add_dual_edge(node_0, node_1)
+                second_dual_node = \
+                        self.dual_graph.node[AisleGraphDualNode(primal_edge_2)]
+                dual_edge = AisleGraphDualEdge(first_dual_node, second_dual_node)
+                self.dual_graph.add_edge(first_dual_node, second_dual_node,
+                                         object=dual_edge,
+                                         weight=dual_edge.weight)
 
     def are_adjacent(self, n0, n1):
         """ returns True if `n0` and `n1` are "adjacent," meaning that the
