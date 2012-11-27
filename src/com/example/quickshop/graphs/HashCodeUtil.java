@@ -1,3 +1,5 @@
+package com.example.quickshop.graphs;
+
 /**
  * Just helps with making hash codes. See also
  * http://stackoverflow.com/questions/113511/hash-code-implementation

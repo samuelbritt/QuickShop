@@ -1,3 +1,5 @@
+package com.example.quickshop.graphs;
+
 
 public interface NodeData extends Comparable<Object> {
 

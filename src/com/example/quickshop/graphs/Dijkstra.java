@@ -1,3 +1,5 @@
+package com.example.quickshop.graphs;
+
 import java.util.ArrayList;
 
 public class Dijkstra<T extends Node> extends PathFinderSingleSourceShortest<T> {

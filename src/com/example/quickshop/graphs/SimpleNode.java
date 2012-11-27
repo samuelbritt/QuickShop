@@ -1,3 +1,5 @@
+package com.example.quickshop.graphs;
+
 
 /** simple node type used for testing graph algos */
 class SimpleNode extends Node {

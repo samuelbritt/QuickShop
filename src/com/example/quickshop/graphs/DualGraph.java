@@ -1,3 +1,5 @@
+package com.example.quickshop.graphs;
+
 import java.util.Arrays;
 import java.util.List;
 

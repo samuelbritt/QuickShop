@@ -1,3 +1,5 @@
+package com.example.quickshop.graphs;
+
 
 /**
  * A Target a pair of Coordinates in the store; the (undirected) edge between which corresponds to two DualNodes.

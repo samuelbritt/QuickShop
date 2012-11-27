@@ -1,3 +1,5 @@
+package com.example.quickshop.graphs;
+
 /**
  * Class used to augment Nodes for path-finding algorithms. Holds the Node
  * itself, the current path distance to whatever source node is required, and

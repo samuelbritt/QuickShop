@@ -1,3 +1,5 @@
+package com.example.quickshop.graphs;
+
 /**
  * A simple class to assist in making Adjacencies (edges). Maintains ID to
  * ensure that all edges created by an object of type AdjacencyFactory have a

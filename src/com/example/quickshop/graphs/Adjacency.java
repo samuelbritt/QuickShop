@@ -1,3 +1,5 @@
+package com.example.quickshop.graphs;
+
 /**
  * A simple class to hold an adjacent node and its weight; that is, an "edge"
  */

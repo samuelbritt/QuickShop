@@ -1,3 +1,5 @@
+package com.example.quickshop.graphs;
+
 
 public class DijkstraFactory<T extends Node> implements PathFinderSingleSourceShortestFactory<T> {
 

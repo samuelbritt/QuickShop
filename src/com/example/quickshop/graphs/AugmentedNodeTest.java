@@ -1,3 +1,5 @@
+package com.example.quickshop.graphs;
+
 import junit.framework.TestCase;
 
 import org.junit.Before;

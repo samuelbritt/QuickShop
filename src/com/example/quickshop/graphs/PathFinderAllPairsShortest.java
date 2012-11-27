@@ -1,3 +1,5 @@
+package com.example.quickshop.graphs;
+
 import java.util.HashMap;
 
 public class PathFinderAllPairsShortest<T extends Node> {
