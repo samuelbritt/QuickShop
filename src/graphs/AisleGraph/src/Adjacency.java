@@ -7,12 +7,18 @@
  *
  */
 public class Adjacency {
+	private int id; // unique ID to identify the edge
 	private	Node node;
 	private int edgeWeight;
 	
-	public Adjacency(Node node, int edgeWeight) {
+	public Adjacency(int id, Node node, int edgeWeight) {
+		this.id = id;
 		this.node = node;
 		this.edgeWeight = edgeWeight;
+	}
+	
+	public int getId() {
+		return id;
 	}
 
 	public Node getNode() {
@@ -24,6 +30,6 @@ public class Adjacency {
 	}
 	
 	public String toString() {
-		return "(" + node.dataToString() + ", " + edgeWeight + ")";
+		return "(" +id + ": "+ node.dataToString() + ", " + edgeWeight + ")";
 	}
 }
