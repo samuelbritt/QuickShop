@@ -13,7 +13,7 @@ public class Store {
 	}
 	
 	//constructor
-	public Store(int storeID, String storName, String locationCoordinates){
+	public Store(int storeID, String storeName, String locationCoordinates){
 		this.storeID = storeID;
 		this.storeName = storeName;
 		this.locationCoordinates = locationCoordinates;
@@ -52,7 +52,7 @@ public class Store {
 	
 	// getting storecoordinates
 	public String getCordinates(){
-		return this.locationCoordinates = locationCoordinates;
+		return this.locationCoordinates;
 	}
 	
 	// setting storecoordinates

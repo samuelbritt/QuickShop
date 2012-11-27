@@ -18,7 +18,7 @@ public class ItemCategory {
 	
 	
 	public int getItemID(){
-		return this.itemID = itemID;
+		return this.itemID;
 	}
 	
 	public void setItemID(int itemID){
