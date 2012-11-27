@@ -22,9 +22,9 @@ public class AugmentedNodeTest extends TestCase {
 		// Paths using a1 as source: 
 		// n1 -(2)-> n2 -(4)-> n3
 		// n1 <-(3)- n2
-		n1.addAdjacency(n2, 2);
-		n2.addAdjacency(n3, 4);
-		n2.addAdjacency(n1, 3);
+		n1.addAdjacency(new Adjacency(1, n2, 2));
+		n2.addAdjacency(new Adjacency(2, n3, 4));
+		n2.addAdjacency(new Adjacency(3, n1, 3));
 		
 		a1.setPathWeight(0);
 		

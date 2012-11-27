@@ -30,7 +30,7 @@ public class DijkstraTest {
 	@Test
 	public void test() {
 		/* Example from CLRS 3e, page 659 */
-		Graph<SimpleNode> G = new Graph<SimpleNode>();
+		Graph<SimpleNode> G = new SimpleGraph();
 		
 		for (int i = 0; i < 5; i++) {
 			G.addNode(new SimpleNode(i));

@@ -1,3 +1,6 @@
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * 
  */
@@ -8,13 +11,17 @@
  */
 public class DualGraph extends Graph<DualNode> {
 	private PrimalGraph primalGraph;
+	private DualNode nodes[];
+	private int nodeCount;
 
 	public DualGraph(PrimalGraph P) {
 		super();
 		this.primalGraph = P;
+		this.nodes = new DualNode[P.edgeCount()];
+		this.nodeCount = 0;
 		create();
 	}
-	
+
 	// TODO: returns the source node
 	public Node getSource() {
 		return this.getNodes().get(0);
@@ -29,7 +36,6 @@ public class DualGraph extends Graph<DualNode> {
 		for (Node N : primalGraph.getNodes()) {
 			PrimalNode n1 = (PrimalNode) N;
 			for (Adjacency adj : n1.getAdjacencies()) {
-				// PrimalNode n2 = (PrimalNode) adj.getNode();
 				createNode(n1, adj);
 			}
 		}
@@ -47,7 +53,8 @@ public class DualGraph extends Graph<DualNode> {
 		}
 	}
 
-	/* returns the dual node corresponding to the primal edge between n1 and n2,
+	/*
+	 * returns the dual node corresponding to the primal edge between n1 and n2,
 	 * or null if it does not exist
 	 */
 	private DualNode correspondingDualNode(PrimalNode n1, PrimalNode n2) {
@@ -59,17 +66,34 @@ public class DualGraph extends Graph<DualNode> {
 		}
 		return null;
 	}
-	
+
 	private DualNode createNode(PrimalNode n1, Adjacency adj) {
-		DualNode n = new DualNode(n1, (PrimalNode) adj.getNode(),
-				adj.getEdgeWeight());
-		super.addNode(n);
-		return n;
+		DualNode n = new DualNode(adj.getId(), n1, (PrimalNode) adj.getNode(),
+		                          adj.getEdgeWeight());
+		return addNode(n);
 	}
 
 	@Override
 	public String toString() {
 		return "Dual " + super.toString();
+	}
+
+	@Override
+	public DualNode addNode(DualNode n) {
+		assert n.getID() < nodes.length;
+		nodes[n.getID()] = n;
+		nodeCount++;
+		return n;
+	}
+
+	@Override
+	public List<DualNode> getNodes() {
+		return Arrays.asList(nodes);
+	}
+
+	@Override
+	public int nodeCount() {
+		return nodeCount;
 	}
 
 }

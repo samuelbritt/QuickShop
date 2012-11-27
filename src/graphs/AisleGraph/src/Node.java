@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Node abstract base class, implements basic methods, handles adjacencies
@@ -9,29 +10,29 @@ import java.util.ArrayList;
 public abstract class Node implements Comparable<Object> {
 
 	private static final int INF = Integer.MAX_VALUE;
-	private ArrayList<Adjacency> adj;
+	private ArrayList<Adjacency> adjacencies;
 
 	public Node() {
 		createAdjList();
 	}
 
 	private void createAdjList() {
-		this.adj = new ArrayList<Adjacency>();
+		this.adjacencies = new ArrayList<Adjacency>();
 	}
 
-	public void addAdjacency(Node n, int weight) {
-		this.adj.add(new Adjacency(n, weight));
+	public void addAdjacency(Adjacency a) {
+		this.adjacencies.add(a);
 	}
 	
-	public ArrayList<Adjacency> getAdjacencies() {
-		return this.adj;
+	public List<Adjacency> getAdjacencies() {
+		return this.adjacencies;
 	}
 	
 	/* returns edge weight between `this` and an adjacent node, or Integer.MAX_VALUE if it does not exist */
 	public int getEdgeWeight(Node adjacentNode) {
-		for (Adjacency adj : this.adj) {
-			if (adj.getNode().equals(adjacentNode)) {
-				return adj.getEdgeWeight();
+		for (Adjacency a : this.adjacencies) {
+			if (a.getNode().equals(adjacentNode)) {
+				return a.getEdgeWeight();
 			}
 		}
 		return INF; // node not in adjacency list
@@ -43,7 +44,7 @@ public abstract class Node implements Comparable<Object> {
 		result.append(nodeDataString());
 		result.append(": [");
 		String prefix = "";
-		for (Adjacency a : this.adj) {
+		for (Adjacency a : this.adjacencies) {
 			result.append(prefix);
 			result.append(a);
 			prefix = ", ";

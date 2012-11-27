@@ -1,17 +1,22 @@
-import java.util.LinkedList;
 import java.util.List;
 
 
-public class Graph<T extends Node> {
-	private LinkedList<T> nodes;
+public abstract class Graph<T extends Node> {
+	private AdjacencyFactory adjFactory;
 
 	public Graph() {
-		this.nodes = new LinkedList<T>();
-	}
+		this.adjFactory = new AdjacencyFactory();
+    }
+
 	
-	public T addNode(T n) {
-		nodes.add(n);
-		return n;
+	abstract public T addNode(T n);
+	
+	abstract public List<T> getNodes();
+	
+	abstract public int nodeCount();
+	
+	public int edgeCount() {
+		return adjFactory.maxID();
 	}
 	
 	public void createDoubleEdge(T n1, T n2, int weight) {
@@ -20,15 +25,8 @@ public class Graph<T extends Node> {
 	}
 
 	public void createSingleEdge(T n1, T n2, int weight) {
-		n1.addAdjacency(n2, weight);
-	}
-	
-	public List<T> getNodes() {
-		return nodes;
-	}
-	
-	public int nodeCount() {
-		return nodes.size();
+		Adjacency adj = adjFactory.createAdjacency(n2, weight);
+		n1.addAdjacency(adj);
 	}
 
 	public String toString() {
