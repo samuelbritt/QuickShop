@@ -1,8 +1,8 @@
 
-public class DijkstraFactory<T extends Node> implements SingleSourcePathFinderFactory<T> {
+public class DijkstraFactory<T extends Node> implements PathFinderSingleSourceShortestFactory<T> {
 
 	@Override
-	public SingleSourceShortestPathFinder<T> makePathFinder(Graph<T> G, T source) {
+	public PathFinderSingleSourceShortest<T> makePathFinder(Graph<T> G, T source) {
 		return new Dijkstra<T>(G, source);
 	}
 
