@@ -43,6 +43,11 @@ public abstract class SingleSourceShortestPathFinder<T extends Node> {
 	public AugmentedNode getAugmentedNode(Node node) {
 		return nodeToAugmented.get(node);
 	}
+	
+	/** Given node v in G, returns the weight of the shortest path from source to v */
+	public int getShortestPathWeight(Node node) {
+		return getAugmentedNode(node).getPathWeight();
+	}
 
 	/** returns the source node for all the stored paths */
 	public Node getSource() {
@@ -79,7 +84,7 @@ public abstract class SingleSourceShortestPathFinder<T extends Node> {
 		AugmentedNode augNode = new AugmentedNode(node);
 		augNode.setInfPath();
 		if (node.equals(source)) {
-			augNode.setShortestPathEstimate(0);
+			augNode.setPathWeight(0);
 		}
 		return augNode;
 	}

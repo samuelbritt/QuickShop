@@ -14,6 +14,11 @@ public class DualGraph extends Graph<DualNode> {
 		this.primalGraph = P;
 		create();
 	}
+	
+	// TODO: returns the source node
+	public Node getSource() {
+		return this.getNodes().get(0);
+	}
 
 	private void create() {
 		addDualNodes();

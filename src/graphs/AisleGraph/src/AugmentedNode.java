@@ -8,13 +8,13 @@
  */
 public class AugmentedNode implements Comparable<AugmentedNode> {
 	private Node node;
-	private int shortestPathEstimate;
+	private int pathWeight;
 	private static final int INF = Integer.MAX_VALUE;
 	private AugmentedNode predecessor;
 
 	public AugmentedNode(Node node) {
 		this.node = node;
-		this.shortestPathEstimate = INF;
+		this.pathWeight = INF;
 		this.predecessor = null;
 	}
 
@@ -30,16 +30,16 @@ public class AugmentedNode implements Comparable<AugmentedNode> {
 		this.predecessor = predecessor;
 	}
 
-	public int getShortestPathEstimate() {
-		return shortestPathEstimate;
+	public int getPathWeight() {
+		return pathWeight;
 	}
 
-	public void setShortestPathEstimate(int shortestPathEstimate) {
-		this.shortestPathEstimate = shortestPathEstimate;
+	public void setPathWeight(int pathWeight) {
+		this.pathWeight = pathWeight;
 	}
 
 	public void setInfPath() {
-		this.setShortestPathEstimate(INF);
+		this.setPathWeight(INF);
 	}
 
 	/** returns a String representing the path from `source` to `node` */
@@ -65,13 +65,13 @@ public class AugmentedNode implements Comparable<AugmentedNode> {
 		int linkWeight = this.node.getEdgeWeight(v.node);
 		assert linkWeight < INF;
 
-		int candidateWeight = this.shortestPathEstimate;
+		int candidateWeight = this.pathWeight;
 		if (candidateWeight < INF) {
 			candidateWeight += linkWeight;
 		}
 
-		if (v.shortestPathEstimate > candidateWeight) {
-			v.shortestPathEstimate = candidateWeight;
+		if (v.pathWeight > candidateWeight) {
+			v.pathWeight = candidateWeight;
 			v.predecessor = this;
 		}
 	}
@@ -79,7 +79,7 @@ public class AugmentedNode implements Comparable<AugmentedNode> {
 	/* Returns negative if this < n, positive if this > n, 0 otherwise */
 	@Override
 	public int compareTo(AugmentedNode other) {
-		return this.shortestPathEstimate - other.shortestPathEstimate;
+		return this.pathWeight - other.pathWeight;
 	}
 
 	@Override
@@ -90,10 +90,10 @@ public class AugmentedNode implements Comparable<AugmentedNode> {
 	public String toString() {
 		String data = this.node.dataToString();
 		String distance;
-		if (this.shortestPathEstimate == INF) {
+		if (this.pathWeight == INF) {
 			distance = "inf";
 		} else {
-			distance = String.valueOf(this.shortestPathEstimate);
+			distance = String.valueOf(this.pathWeight);
 		}
 		return "(" + data + ", " + distance + ")";
 	}

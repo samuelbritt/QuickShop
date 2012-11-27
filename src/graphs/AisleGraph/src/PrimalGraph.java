@@ -12,26 +12,26 @@ public class PrimalGraph extends Graph<PrimalNode> {
 
 	public PrimalGraph(int aisleCount, int nodesPerAisle) {
 		super();
-		this.setAisleCount(aisleCount);
+		this.aisleCount = aisleCount;
 		this.nodesPerAisle = nodesPerAisle;
 		create();
 	}
 
 	private void create() {
-		PrimalNode[] prev = createAisle(0);
+		PrimalNode[] currentAisle = createAisle(0);
 		for (int x = 1; x < this.aisleCount; x++) {
-			PrimalNode[] next = createAisle(x);
-			connectAisle(prev, next);
-			prev = next;
+			PrimalNode[] nextAisle = createAisle(x);
+			connectAisle(currentAisle, nextAisle);
+			currentAisle = nextAisle;
 		}
 	}
 
-	/* creates a single aisle, a string of (doubly) connected nodes */
+	/* creates a single aisle, an array of (doubly) connected nodes */
 	private PrimalNode[] createAisle(int x) {
 		PrimalNode[] aisle = new PrimalNode[this.nodesPerAisle];
-		aisle[0] = createNode(x, 0);
+		aisle[0] = addNewNode(x, 0);
 		for (int y = 1; y < this.nodesPerAisle; y++) {
-			aisle[y] = createNode(x, y);
+			aisle[y] = addNewNode(x, y);
 			createDoubleEdge(aisle[y-1], aisle[y], edgeWeight);
 		}
 		return aisle;
@@ -43,18 +43,10 @@ public class PrimalGraph extends Graph<PrimalNode> {
 		createDoubleEdge(aisle1[aisle1.length - 1], aisle2[aisle2.length - 1], edgeWeight);
 	}
 	
-	private PrimalNode createNode(int x, int y) {
+	private PrimalNode addNewNode(int x, int y) {
 		PrimalNode n = new PrimalNode(x, y);
 		super.addNode(n);
 		return n;
-	}
-
-	public int getAisleCount() {
-		return aisleCount;
-	}
-
-	public void setAisleCount(int aisleCount) {
-		this.aisleCount = aisleCount;
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -36,7 +36,7 @@ public class DijkstraTest {
 			G.addNode(new SimpleNode(i));
 		}
 		
-		ArrayList<SimpleNode> n = G.getNodes();
+		List<SimpleNode> n = G.getNodes();
 		G.createSingleEdge(n.get(0), n.get(1), 10);
 		assertEquals(10, n.get(0).getEdgeWeight(n.get(1)));
 		G.createSingleEdge(n.get(0), n.get(2), 5);
@@ -59,7 +59,7 @@ public class DijkstraTest {
 	}
 	
 	private void checkPredAndPath(Dijkstra<SimpleNode> dij, 
-			ArrayList<SimpleNode> nodes,
+			List<SimpleNode> nodes,
 			int nodeIndex, int predIndex, int expectedWeight) {
 		Node node = getNode(nodes, nodeIndex);
 		Node pred = getNode(nodes, predIndex);
@@ -67,7 +67,7 @@ public class DijkstraTest {
 		checkPath(dij, node, expectedWeight);
 	}
 	
-	private Node getNode(ArrayList<SimpleNode> nodes, int nodeIndex) {
+	private Node getNode(List<SimpleNode> nodes, int nodeIndex) {
 		if (nodeIndex > -1) {
 			return nodes.get(nodeIndex);
 		}
@@ -82,7 +82,7 @@ public class DijkstraTest {
 	
 	private void checkPath(Dijkstra<SimpleNode> dij, Node n, int weight) {
 		AugmentedNode an = getAug(dij, n);
-		assertEquals(weight, an.getShortestPathEstimate());
+		assertEquals(weight, an.getPathWeight());
 	}
 	
 	private AugmentedNode getAug(Dijkstra<SimpleNode> dij, Node n) {

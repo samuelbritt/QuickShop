@@ -1,11 +1,12 @@
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class Graph<T extends Node> {
-	private ArrayList<T> nodes;
+	private LinkedList<T> nodes;
 
 	public Graph() {
-		this.nodes = new ArrayList<T>();
+		this.nodes = new LinkedList<T>();
 	}
 	
 	public T addNode(T n) {
@@ -22,8 +23,12 @@ public class Graph<T extends Node> {
 		n1.addAdjacency(n2, weight);
 	}
 	
-	public ArrayList<T> getNodes() {
+	public List<T> getNodes() {
 		return nodes;
+	}
+	
+	public int nodeCount() {
+		return nodes.size();
 	}
 
 	public String toString() {

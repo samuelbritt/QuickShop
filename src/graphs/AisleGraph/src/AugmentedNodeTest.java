@@ -1,4 +1,3 @@
-import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import org.junit.Before;
@@ -27,13 +26,13 @@ public class AugmentedNodeTest extends TestCase {
 		n2.addAdjacency(n3, 4);
 		n2.addAdjacency(n1, 3);
 		
-		a1.setShortestPathEstimate(0);
+		a1.setPathWeight(0);
 		
 		a3.setPredecessor(a2);
-		a3.setShortestPathEstimate(6);
+		a3.setPathWeight(6);
 
 		a2.setPredecessor(a1);
-		a2.setShortestPathEstimate(2);
+		a2.setPathWeight(2);
 
 	}
 
@@ -51,14 +50,14 @@ public class AugmentedNodeTest extends TestCase {
 
 	@Test
 	public void testRelax() {
-		int weight = a2.getShortestPathEstimate();
+		int weight = a2.getPathWeight();
 		a2.setPredecessor(a3);
-		a2.setShortestPathEstimate(weight + 10);
+		a2.setPathWeight(weight + 10);
 
 		a1.relax(a2);
 		
 		assertEquals(a1, a2.getPredecessor());
-		assertEquals(weight, a2.getShortestPathEstimate());
+		assertEquals(weight, a2.getPathWeight());
 		
 	}
 
