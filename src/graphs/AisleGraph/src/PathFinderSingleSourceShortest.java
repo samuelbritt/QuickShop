@@ -14,20 +14,20 @@ import java.util.PriorityQueue;
  * @author sam
  * 
  */
-public abstract class SingleSourceShortestPathFinder<T extends Node> {
+public abstract class PathFinderSingleSourceShortest<T extends Node> {
 	private Graph<T> graph;
 	private Node source;
 	private PriorityQueue<AugmentedNode> pathList;
 	private HashMap<Node, AugmentedNode> nodeToAugmented;
 
-	public SingleSourceShortestPathFinder() {
+	public PathFinderSingleSourceShortest() {
 		this.graph = null;
 		this.source = null;
 		this.pathList = new PriorityQueue<AugmentedNode>();
 		this.nodeToAugmented = new HashMap<Node, AugmentedNode>();
 	}
 
-	public SingleSourceShortestPathFinder(Graph<T> G, Node source) {
+	public PathFinderSingleSourceShortest(Graph<T> G, Node source) {
 		this.graph = G;
 		this.source = source;
 		this.pathList = new PriorityQueue<AugmentedNode>();

@@ -1,20 +1,20 @@
 import java.util.HashMap;
 
-public class AllPairsShortestPathFinder<T extends Node> {
-	private SingleSourcePathFinderFactory<T> singleSourceFactory;
+public class PathFinderAllPairsShortest<T extends Node> {
+	private PathFinderSingleSourceShortestFactory<T> singleSourceFactory;
 	private Graph<T> graph;
-	private HashMap<T, SingleSourceShortestPathFinder<T>> sourceToPaths;
+	private HashMap<T, PathFinderSingleSourceShortest<T>> sourceToPaths;
 
-	public AllPairsShortestPathFinder(Graph<T> graph,
-			SingleSourcePathFinderFactory<T> singleSourceFactory) {
+	public PathFinderAllPairsShortest(Graph<T> graph,
+			PathFinderSingleSourceShortestFactory<T> singleSourceFactory) {
 		this.graph = graph;
 		this.singleSourceFactory = singleSourceFactory;
-		this.sourceToPaths = new HashMap<T, SingleSourceShortestPathFinder<T>>();
+		this.sourceToPaths = new HashMap<T, PathFinderSingleSourceShortest<T>>();
 	}
 
 	public void findShortestPaths() {
 		for (T source : graph.getNodes()) {
-			SingleSourceShortestPathFinder<T> finder;
+			PathFinderSingleSourceShortest<T> finder;
 			finder = singleSourceFactory.makePathFinder(graph, source);
 			finder.findShortestPaths();
 			sourceToPaths.put(source, finder);
