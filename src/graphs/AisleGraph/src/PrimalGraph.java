@@ -76,7 +76,11 @@ public class PrimalGraph extends Graph<PrimalNode> {
 		}
 		return list;
 	}
-
+	
+	public PrimalNode getNode(Coordinates coord) {
+		return nodes[coord.getX()][coord.getY()];
+	}
+	
 	@Override
 	public int nodeCount() {
 		return aisleCount * nodesPerAisle;

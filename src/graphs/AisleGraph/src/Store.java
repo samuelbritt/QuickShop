@@ -38,7 +38,7 @@ public class Store {
 	 * returns the index of the Node `v` in `targets` with the shortest path
 	 * from `source` to `v`.
 	 */
-	public int findMinPath(Node source, List<Node> targets) {
+	private int findMinPath(Node source, List<Node> targets) {
 		int min = 0;
 		int minIndex = -1;
 		for (int i = 0; i < targets.size(); i++) {

@@ -52,19 +52,28 @@ public class DualGraph extends Graph<DualNode> {
 			}
 		}
 	}
+	
+	/* returns the pair of dual nodes that correspond to the two edges implied by Target */
+	public DualNode[] matchTarget(Target target) {
+		PrimalNode pstart = primalGraph.getNode(target.getStart());
+		PrimalNode pend = primalGraph.getNode(target.getEnd());
+		DualNode[] arr = new DualNode[2];
+		arr[0] = correspondingDualNode(pstart, pend);
+		arr[1] = correspondingDualNode(pend, pstart);
+		return arr;
+	}
 
 	/*
-	 * returns the dual node corresponding to the primal edge between n1 and n2,
+	 * returns the dual node corresponding to the primal edge between p1 and p2,
 	 * or null if it does not exist
 	 */
-	private DualNode correspondingDualNode(PrimalNode n1, PrimalNode n2) {
-		for (Node N : getNodes()) {
-			DualNode d = (DualNode) N;
-			if (d.getStart().equals(n1) && d.getEnd().equals(n2)) {
-				return d;
-			}
+	private DualNode correspondingDualNode(PrimalNode p1, PrimalNode p2) {
+		int edgeID = p1.getEdgeID(p2);
+		if (edgeID >= 0) {
+			return nodes[edgeID];
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 	private DualNode createNode(PrimalNode n1, Adjacency adj) {
