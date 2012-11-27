@@ -1,0 +1,49 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:orientation="vertical">
+    
+    <TextView
+        android:id="@+id/itemName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text="ItemName" />
+
+    <EditText
+        android:id="@+id/editText2"
+        android:layout_width="156dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:ems="10"
+        android:hint="@string/enterItemName" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Item" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dip"
+        android:layout_marginLeft="8dip"
+        android:layout_marginRight="8dip" />
+    
+    <ExpandableListView
+        android:id="@+id/ExpList"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:groupIndicator="@null"
+        android:layout_below="@+id/editText2" >
+    </ExpandableListView>
+    
+     
+   
+</LinearLayout>
