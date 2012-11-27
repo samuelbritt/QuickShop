@@ -8,12 +8,15 @@ enum EdgeAngle {
 }
 
 public class DualNode extends Node {
+	private int id;
 	private PrimalNode start;
 	private PrimalNode end;
 	private int primalEdgeWeight;
 
-	public DualNode(PrimalNode start, PrimalNode end, int primalEdgeWeight) {
+	public DualNode(int id, PrimalNode start, PrimalNode end,
+	                int primalEdgeWeight) {
 		super();
+		this.id = id;
 		this.start = start;
 		this.end = end;
 		this.primalEdgeWeight = primalEdgeWeight;
@@ -22,6 +25,10 @@ public class DualNode extends Node {
 	@Override
 	public String dataToString() {
 		return start.dataToString() + "-" + end.dataToString();
+	}
+	
+	public int getID() {
+		return id;
 	}
 
 	public PrimalNode getStart() {
@@ -35,7 +42,7 @@ public class DualNode extends Node {
 	public int getPrimalEdgeWeight() {
 		return primalEdgeWeight;
 	}
-	
+
 	public int edgeWeight(Node o) {
 		DualNode other = (DualNode) o;
 		int weight = (this.primalEdgeWeight + other.primalEdgeWeight) / 2;
@@ -51,7 +58,8 @@ public class DualNode extends Node {
 		// Let `this` represent the primal edge (s, t) and let `other`
 		// represent the primal edge (t, u)
 		PrimalNode s = this.start;
-		PrimalNode t = this.end; // = other.start, if `this` and `other` are adjacent
+		PrimalNode t = this.end; // = other.start, if `this` and `other` are
+								 // adjacent
 		PrimalNode u = other.end;
 		if (s.equals(u)) {
 			return EdgeAngle.UTURN;
@@ -84,13 +92,13 @@ public class DualNode extends Node {
 			return start.compareTo(other.end);
 		}
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		DualNode other = (DualNode) o;
 		return start.equals(other.start) && end.equals(other.end);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		int result = HashCodeUtil.SEED;

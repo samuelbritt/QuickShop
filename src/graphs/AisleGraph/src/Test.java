@@ -28,8 +28,8 @@ public class Test {
 		PrimalNode p00 = new PrimalNode(0, 0);
 		PrimalNode p01 = new PrimalNode(0, 1);
 		PrimalNode p10 = new PrimalNode(1, 0);
-		System.out.println(new DualNode(p01, p00, 0).hashCode());
-		System.out.println(new DualNode(p00, p10, 0).hashCode());
+		System.out.println(new DualNode(1, p01, p00, 0).hashCode());
+		System.out.println(new DualNode(2, p00, p10, 0).hashCode());
 		
 		Integer h = new Integer(0);
 		ArrayList<Integer> hashes = new ArrayList<Integer>(D.getNodes().size());
