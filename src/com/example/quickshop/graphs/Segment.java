@@ -1,17 +1,17 @@
 package com.example.quickshop.graphs;
 
-
 /**
- * A Target a pair of Coordinates in the store; the (undirected) edge between which corresponds to two DualNodes.
+ * A Segment is a pair of Coordinates in the store; the (undirected) edge
+ * between which corresponds to two DualNodes.
  * 
  * @author sam
- *
+ * 
  */
-public class Target {
+public class Segment {
 	private Coordinates start;
 	private Coordinates end;
-	
-	public Target(Coordinates start, Coordinates end) {
+
+	public Segment(Coordinates start, Coordinates end) {
 		this.start = start;
 		this.end = end;
 	}

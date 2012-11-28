@@ -18,40 +18,45 @@ public class Store {
 	public Store(int aisleCount, int nodesPerAisle) {
 		P = new PrimalGraph(aisleCount, nodesPerAisle);
 		D = new DualGraph(P);
-		APSP_Finder = new PathFinderAllPairsShortest<DualNode>(
-				D, new DijkstraFactory<DualNode>());
+		DijkstraFactory<DualNode> dijFact = new DijkstraFactory<DualNode>();
+		APSP_Finder = new PathFinderAllPairsShortest<DualNode>(D, dijFact);
+		
 		APSP_Finder.findShortestPaths();
+	}
+
+	public Category addCategory(String categoryName, Segment[] segments) {
+		Category category = new Category(categoryName);
+		addNodesFromAllSegments(category, segments);
+		return category;
+	}
+
+	private void addNodesFromAllSegments(Category category, Segment[] segments) {
+		for (Segment segment : segments) {
+			addNodeFromSegment(category, segment);
+		}
+	}
+
+	private void addNodeFromSegment(Category category, Segment segment) {
+		for (DualNode node : D.matchSegment(segment)) {
+			category.addNode(node);
+		}
 	}
 
 	/**
 	 * Sorts `targets` in place. The resulting sort is optimal for this store.
 	 */
-	public void optimalPathSort(List<Node> targets) {
-		Node start = D.getSource();
-		for (int i = 0; i < targets.size(); i++) {
-			int nextIndex = i + findMinPath(start,
-			                                targets.subList(i, targets.size()));
-			Collections.swap(targets, i, nextIndex);
-			start = targets.get(nextIndex);
+	public void optimalPathSort(List<Category> categories) {
+		DualNode start = (DualNode) D.getSource();
+		for (int i = 0; i < categories.size(); i++) {
+			List<Category> sublist = categories.subList(i, categories.size());
+			updateDistances(start, sublist);
+			Collections.sort(sublist);
 		}
 	}
 
-	/**
-	 * returns the index of the Node `v` in `targets` with the shortest path
-	 * from `source` to `v`.
-	 */
-	private int findMinPath(Node source, List<Node> targets) {
-		int min = 0;
-		int minIndex = -1;
-		for (int i = 0; i < targets.size(); i++) {
-			int pathLength =
-			        APSP_Finder.getShortestPath(source, targets.get(i));
-			if (pathLength < min) {
-				min = pathLength;
-				minIndex = i;
-			}
+	private void updateDistances(DualNode source, List<Category> categories) {
+		for (Category cat : categories) {
+			cat.updateDistance(source, this.APSP_Finder);
 		}
-		assert minIndex >= 0;
-		return minIndex;
 	}
 }

@@ -54,11 +54,14 @@ public class DualGraph extends Graph<DualNode> {
 			}
 		}
 	}
-	
-	/* returns the pair of dual nodes that correspond to the two edges implied by Target */
-	public DualNode[] matchTarget(Target target) {
-		PrimalNode pstart = primalGraph.getNode(target.getStart());
-		PrimalNode pend = primalGraph.getNode(target.getEnd());
+
+	/*
+	 * returns the pair of dual nodes that correspond to the two edges implied
+	 * by Segment
+	 */
+	public DualNode[] matchSegment(Segment segment) {
+		PrimalNode pstart = primalGraph.getNode(segment.getStart());
+		PrimalNode pend = primalGraph.getNode(segment.getEnd());
 		DualNode[] arr = new DualNode[2];
 		arr[0] = correspondingDualNode(pstart, pend);
 		arr[1] = correspondingDualNode(pend, pstart);
