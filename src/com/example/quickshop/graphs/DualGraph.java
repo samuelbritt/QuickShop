@@ -55,7 +55,7 @@ public class DualGraph extends Graph<DualNode> {
 		}
 	}
 
-	/*
+	/**
 	 * returns the pair of dual nodes that correspond to the two edges implied
 	 * by Segment
 	 */
@@ -68,7 +68,7 @@ public class DualGraph extends Graph<DualNode> {
 		return arr;
 	}
 
-	/*
+	/**
 	 * returns the dual node corresponding to the primal edge between p1 and p2,
 	 * or null if it does not exist
 	 */

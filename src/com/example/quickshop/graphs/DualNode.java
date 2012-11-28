@@ -75,7 +75,7 @@ public class DualNode extends Node {
 
 	private int weightOfAngle(EdgeAngle angle) {
 		if (angle == EdgeAngle.UTURN) {
-			return 5;
+			return 7;
 		} else if (angle == EdgeAngle.RIGHTANGLE) {
 			return 1;
 		} else if (angle == EdgeAngle.STRAIGHT) {

@@ -2,7 +2,7 @@ package com.example.quickshop.graphs;
 
 
 /** simple node type used for testing graph algos */
-class SimpleNode extends Node {
+public class SimpleNode extends Node {
 	private int x;
 	
 	public SimpleNode(int x) {

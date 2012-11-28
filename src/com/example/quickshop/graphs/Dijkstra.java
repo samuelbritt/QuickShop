@@ -15,14 +15,21 @@ public class Dijkstra<T extends Node> extends PathFinderSingleSourceShortest<T> 
 	}
 
 	@Override
-	void findShortestPaths() {
+	public void findShortestPaths() {
 		while (!this.isEmpty()) {
 			AugmentedNode u = this.removeMin();
 			solvedPaths.add(u);
 			Node n = u.getNode();
+//			System.out.println("  Solved " + n + ", d " + u.getPathWeight());
 			for (Adjacency adj : n.getAdjacencies()) {
 				AugmentedNode v = getAugmentedNode(adj.getNode());
-				u.relax(v);
+				if (!solvedPaths.contains(v)) {
+//					System.out.println("    Relaxing "
+//					                   + v.getNode().dataToString() + ", d "
+//					                   + v.getPathWeight());
+					relax(u, v);
+//					System.out.println("      New distance: " + v.getPathWeight());
+				}
 			}
 		}
 	}

@@ -48,14 +48,14 @@ public class PrimalGraph extends Graph<PrimalNode> {
 
 	private void connectAisles() {
 		for (int aisle = 1; aisle < this.aisleCount; aisle++) {
-			connectAisle(nodes[aisle], nodes[aisle - 1]);
+			connectAisle(nodes[aisle - 1], nodes[aisle]);
 		}
 	}
 
 	/* given the two aisles of nodes, connects their first and last nodes */
 	private void connectAisle(PrimalNode[] aisle1, PrimalNode[] aisle2) {
 		createDoubleEdge(aisle1[0], aisle2[0], edgeWeight);
-		createDoubleEdge(aisle1[aisle1.length - 1], aisle2[aisle2.length - 1],
+		createDoubleEdge(aisle1[nodesPerAisle - 1], aisle2[nodesPerAisle - 1],
 		                 edgeWeight);
 	}
 
@@ -78,11 +78,11 @@ public class PrimalGraph extends Graph<PrimalNode> {
 		}
 		return list;
 	}
-	
+
 	public PrimalNode getNode(Coordinates coord) {
 		return nodes[coord.getX()][coord.getY()];
 	}
-	
+
 	@Override
 	public int nodeCount() {
 		return aisleCount * nodesPerAisle;

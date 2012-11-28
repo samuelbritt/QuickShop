@@ -72,7 +72,7 @@ public class AugmentedNode implements Comparable<AugmentedNode> {
 			candidateWeight += linkWeight;
 		}
 
-		if (v.pathWeight > candidateWeight) {
+		if (candidateWeight < v.pathWeight) {
 			v.pathWeight = candidateWeight;
 			v.predecessor = this;
 		}

@@ -45,10 +45,17 @@ public abstract class PathFinderSingleSourceShortest<T extends Node> {
 	public AugmentedNode getAugmentedNode(Node node) {
 		return nodeToAugmented.get(node);
 	}
-	
-	/** Given node v in G, returns the weight of the shortest path from source to v */
+
+	/**
+	 * Given node v in G, returns the weight of the shortest path from source to
+	 * v
+	 */
 	public int getShortestPathWeight(Node node) {
 		return getAugmentedNode(node).getPathWeight();
+	}
+
+	public String getPathString(Node node) {
+		return getAugmentedNode(node).pathString();
 	}
 
 	/** returns the source node for all the stored paths */
@@ -56,9 +63,20 @@ public abstract class PathFinderSingleSourceShortest<T extends Node> {
 		return source;
 	}
 
-	/** removes and returns the AugmentedNode with the shortest path from the source node */
+	/**
+	 * removes and returns the AugmentedNode with the shortest path from the
+	 * source node
+	 */
 	public AugmentedNode removeMin() {
 		return pathList.poll();
+	}
+
+	public Boolean remove(AugmentedNode n) {
+		return pathList.remove(n);
+	}
+
+	public Boolean add(AugmentedNode n) {
+		return pathList.add(n);
 	}
 
 	public boolean isEmpty() {
@@ -68,7 +86,7 @@ public abstract class PathFinderSingleSourceShortest<T extends Node> {
 	public int nodeCount() {
 		return pathList.size();
 	}
-	
+
 	private void initialize() {
 		for (Node node : this.graph.getNodes()) {
 			addNewAugmentedNode(node);
@@ -77,11 +95,11 @@ public abstract class PathFinderSingleSourceShortest<T extends Node> {
 
 	private AugmentedNode addNewAugmentedNode(Node node) {
 		AugmentedNode augNode = createAugmentedNode(node);
-		pathList.add(augNode);
 		nodeToAugmented.put(node, augNode);
+		this.add(augNode);
 		return augNode;
 	}
-	
+
 	private AugmentedNode createAugmentedNode(Node node) {
 		AugmentedNode augNode = new AugmentedNode(node);
 		augNode.setInfPath();
@@ -89,6 +107,12 @@ public abstract class PathFinderSingleSourceShortest<T extends Node> {
 			augNode.setPathWeight(0);
 		}
 		return augNode;
+	}
+
+	public void relax(AugmentedNode u, AugmentedNode v) {
+		this.remove(v);
+		u.relax(v);
+		this.add(v);
 	}
 
 }
