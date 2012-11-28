@@ -1,9 +1,12 @@
-package com.example.quickshop.graphs;
+package com.example.quickshop.test;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.example.quickshop.graphs.DualGraph;
+import com.example.quickshop.graphs.PrimalGraph;
 
 
 public class DualGraphTest {

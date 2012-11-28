@@ -1,4 +1,4 @@
-package com.example.quickshop.graphs;
+package com.example.quickshop.test;
 
 import static org.junit.Assert.*;
 
@@ -9,6 +9,13 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.example.quickshop.graphs.AugmentedNode;
+import com.example.quickshop.graphs.Dijkstra;
+import com.example.quickshop.graphs.Graph;
+import com.example.quickshop.graphs.Node;
+import com.example.quickshop.graphs.SimpleGraph;
+import com.example.quickshop.graphs.SimpleNode;
 
 
 public class DijkstraTest {

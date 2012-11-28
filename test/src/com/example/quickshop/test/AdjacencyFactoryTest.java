@@ -1,8 +1,12 @@
-package com.example.quickshop.graphs;
+package com.example.quickshop.test;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import com.example.quickshop.graphs.Adjacency;
+import com.example.quickshop.graphs.AdjacencyFactory;
+import com.example.quickshop.graphs.SimpleNode;
 
 
 public class AdjacencyFactoryTest {

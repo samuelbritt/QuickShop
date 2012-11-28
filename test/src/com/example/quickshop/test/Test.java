@@ -1,6 +1,12 @@
-package com.example.quickshop.graphs;
+package com.example.quickshop.test;
 
 import java.util.ArrayList;
+
+import com.example.quickshop.graphs.DualGraph;
+import com.example.quickshop.graphs.DualNode;
+import com.example.quickshop.graphs.Node;
+import com.example.quickshop.graphs.PrimalGraph;
+import com.example.quickshop.graphs.PrimalNode;
 
 /**
  * @author sam

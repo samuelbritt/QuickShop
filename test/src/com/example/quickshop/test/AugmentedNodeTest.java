@@ -1,9 +1,13 @@
-package com.example.quickshop.graphs;
+package com.example.quickshop.test;
 
 import junit.framework.TestCase;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.example.quickshop.graphs.Adjacency;
+import com.example.quickshop.graphs.AugmentedNode;
+import com.example.quickshop.graphs.SimpleNode;
 
 
 public class AugmentedNodeTest extends TestCase {
