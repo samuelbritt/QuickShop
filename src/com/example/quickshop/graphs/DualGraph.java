@@ -14,19 +14,16 @@ import java.util.List;
 public class DualGraph extends Graph<DualNode> {
 	private PrimalGraph primalGraph;
 	private DualNode nodes[];
+	private DualNode source;
 	private int nodeCount;
 
 	public DualGraph(PrimalGraph P) {
 		super();
 		this.primalGraph = P;
-		this.nodes = new DualNode[P.edgeCount()];
+		this.nodes = new DualNode[P.edgeCount() + 1]; // account for source node
 		this.nodeCount = 0;
+		this.source = null;
 		create();
-	}
-
-	// TODO: returns the source node
-	public Node getSource() {
-		return this.getNodes().get(0);
 	}
 
 	private void create() {
@@ -35,12 +32,28 @@ public class DualGraph extends Graph<DualNode> {
 	}
 
 	private void addDualNodes() {
+		addAisleNodes();
+		addSourceNode();
+	}
+
+	private void addAisleNodes() {
 		for (Node N : primalGraph.getNodes()) {
 			PrimalNode n1 = (PrimalNode) N;
 			for (Adjacency adj : n1.getAdjacencies()) {
 				createNode(n1, adj);
 			}
 		}
+	}
+
+	private void addSourceNode() {
+		PrimalNode start = primalGraph.getSource();
+		PrimalNode primalSource = new PrimalNode(-1, -1);
+		Adjacency adj = primalGraph.createSingleEdge(primalSource, start, 0);
+		this.source = createNode(primalSource, adj);
+	}
+
+	public DualNode getSource() {
+		return this.source;
 	}
 
 	private void addDualEdges() {
@@ -60,8 +73,8 @@ public class DualGraph extends Graph<DualNode> {
 	 * by Segment
 	 */
 	public DualNode[] matchSegment(Segment segment) {
-		PrimalNode pstart = primalGraph.getNode(segment.getStart());
-		PrimalNode pend = primalGraph.getNode(segment.getEnd());
+		PrimalNode pstart = primalGraph.nodeAt(segment.getStart());
+		PrimalNode pend = primalGraph.nodeAt(segment.getEnd());
 		DualNode[] arr = new DualNode[2];
 		arr[0] = correspondingDualNode(pstart, pend);
 		arr[1] = correspondingDualNode(pend, pstart);

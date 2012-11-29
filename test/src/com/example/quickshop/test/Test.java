@@ -2,6 +2,7 @@ package com.example.quickshop.test;
 
 import java.util.ArrayList;
 
+import com.example.quickshop.graphs.Coordinates;
 import com.example.quickshop.graphs.DualGraph;
 import com.example.quickshop.graphs.DualNode;
 import com.example.quickshop.graphs.Node;
@@ -17,7 +18,7 @@ public class Test {
 	public static void main(String[] args) {
 		int aisleCount = 12;
 		int nodesPerAisle = 4;
-		PrimalGraph P = new PrimalGraph(aisleCount, nodesPerAisle);
+		PrimalGraph P = new PrimalGraph(aisleCount, nodesPerAisle, new Coordinates(0,0));
 		System.out.println(P);
 
 		System.out.println();

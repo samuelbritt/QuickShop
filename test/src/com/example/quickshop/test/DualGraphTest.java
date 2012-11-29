@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.example.quickshop.graphs.Coordinates;
 import com.example.quickshop.graphs.DualGraph;
 import com.example.quickshop.graphs.PrimalGraph;
 
@@ -17,7 +18,7 @@ public class DualGraphTest {
 	public void setUp() throws Exception {
 		int aisleCount = 3;
 		int nodesPerAisle = 4;
-		P = new PrimalGraph(aisleCount, nodesPerAisle);
+		P = new PrimalGraph(aisleCount, nodesPerAisle, new Coordinates(0,0));
 		D = new DualGraph(P);
 	}
 

@@ -15,6 +15,7 @@ public class StoreTest extends TestCase {
 	private Store S;
 	private final static int aisleCount = 3;
 	private final static int nodesPerAisle = 4;
+	private final static Coordinates startCoords = new Coordinates(0,0);
 	private Coordinates[][] coords;
 
 	public StoreTest() {
@@ -23,7 +24,7 @@ public class StoreTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		S = new Store(aisleCount, nodesPerAisle);
+		S = new Store(aisleCount, nodesPerAisle, startCoords);
 		coords = new Coordinates[aisleCount][nodesPerAisle];
 		for (int aisle = 0; aisle < aisleCount; aisle++) {
 			for (int node = 0; node < nodesPerAisle; node++) {

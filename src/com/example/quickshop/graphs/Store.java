@@ -15,8 +15,8 @@ public class Store {
 	DualGraph D;
 	PathFinderAllPairsShortest<DualNode> APSP_Finder;
 
-	public Store(int aisleCount, int nodesPerAisle) {
-		P = new PrimalGraph(aisleCount, nodesPerAisle);
+	public Store(int aisleCount, int nodesPerAisle, Coordinates startCoords) {
+		P = new PrimalGraph(aisleCount, nodesPerAisle, startCoords);
 		D = new DualGraph(P);
 		
 		DijkstraFactory<DualNode> dijFact = new DijkstraFactory<DualNode>();

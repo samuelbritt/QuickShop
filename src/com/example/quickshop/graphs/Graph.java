@@ -26,9 +26,10 @@ public abstract class Graph<T extends Node> {
 		createSingleEdge(n2, n1, weight);
 	}
 
-	public void createSingleEdge(T n1, T n2, int weight) {
+	public Adjacency createSingleEdge(T n1, T n2, int weight) {
 		Adjacency adj = adjFactory.createAdjacency(n2, weight);
 		n1.addAdjacency(adj);
+		return adj;
 	}
 
 	public String toString() {

@@ -14,42 +14,24 @@ import java.util.List;
 public class PrimalGraph extends Graph<PrimalNode> {
 	private int aisleCount;
 	private int nodesPerAisle;
-	private PrimalNode[][] nodes;
+	private PrimalNode[][] aisleNodes;
+	private PrimalNode sourceNode;
 	private static final int edgeWeight = 1;
 
-	public PrimalGraph(int aisleCount, int nodesPerAisle) {
+	public PrimalGraph(int aisleCount, int nodesPerAisle, Coordinates startCoords) {
 		super();
 		this.aisleCount = aisleCount;
 		this.nodesPerAisle = nodesPerAisle;
-		this.nodes = new PrimalNode[aisleCount][nodesPerAisle];
-		create();
+		this.aisleNodes = new PrimalNode[aisleCount][nodesPerAisle];
+		this.sourceNode = null;
+		createGraph();
+		this.setSource(nodeAt(startCoords));
 	}
 
-	private void create() {
-		createAisles();
-		connectAisles();
-	}
-
-	private void createAisles() {
-		for (int aisle = 0; aisle < this.aisleCount; aisle++) {
-			createSingleAisle(aisle);
-		}
-	}
-
-	/* creates a single aisle, an array of (doubly) connected nodes */
-	private void createSingleAisle(int aisleNumber) {
-		PrimalNode[] aisle = nodes[aisleNumber];
-		aisle[0] = new PrimalNode(aisleNumber, 0);
-		for (int y = 1; y < this.nodesPerAisle; y++) {
-			aisle[y] = new PrimalNode(aisleNumber, y);
-			createDoubleEdge(aisle[y - 1], aisle[y], edgeWeight);
-		}
-	}
-
-	private void connectAisles() {
-		for (int aisle = 1; aisle < this.aisleCount; aisle++) {
-			connectAisle(nodes[aisle - 1], nodes[aisle]);
-		}
+	@Override
+	public PrimalNode addNode(PrimalNode n) {
+		aisleNodes[n.getX()][n.getY()] = n;
+		return n;
 	}
 
 	/* given the two aisles of nodes, connects their first and last nodes */
@@ -59,32 +41,63 @@ public class PrimalGraph extends Graph<PrimalNode> {
 		                 edgeWeight);
 	}
 
-	@Override
-	public String toString() {
-		return "Primal " + super.toString();
+	private void connectAisles() {
+		for (int aisle = 1; aisle < this.aisleCount; aisle++) {
+			connectAisle(aisleNodes[aisle - 1], aisleNodes[aisle]);
+		}
 	}
 
-	@Override
-	public PrimalNode addNode(PrimalNode n) {
-		nodes[n.getX()][n.getY()] = n;
-		return n;
+	private void createAisles() {
+		for (int aisle = 0; aisle < this.aisleCount; aisle++) {
+			createSingleAisle(aisle);
+		}
+	}
+
+	private void createGraph() {
+		createAisles();
+		connectAisles();
+	}
+
+	/* creates a single aisle, an array of (doubly) connected nodes */
+	private void createSingleAisle(int aisleNumber) {
+		PrimalNode[] aisle = aisleNodes[aisleNumber];
+		aisle[0] = new PrimalNode(aisleNumber, 0);
+		for (int y = 1; y < this.nodesPerAisle; y++) {
+			aisle[y] = new PrimalNode(aisleNumber, y);
+			createDoubleEdge(aisle[y - 1], aisle[y], edgeWeight);
+		}
 	}
 
 	@Override
 	public List<PrimalNode> getNodes() {
 		LinkedList<PrimalNode> list = new LinkedList<PrimalNode>();
 		for (int aisle = 0; aisle < aisleCount; aisle++) {
-			list.addAll(Arrays.asList(nodes[aisle]));
+			list.addAll(Arrays.asList(aisleNodes[aisle]));
 		}
 		return list;
 	}
 
-	public PrimalNode getNode(Coordinates coord) {
-		return nodes[coord.getX()][coord.getY()];
+	public PrimalNode getSource() {
+		return sourceNode;
 	}
 
+	/** returns the node at the specified coordinates */
+	public PrimalNode nodeAt(Coordinates coord) {
+		return aisleNodes[coord.getX()][coord.getY()];
+	}
+	
 	@Override
 	public int nodeCount() {
 		return aisleCount * nodesPerAisle;
+	}
+	
+	/** Sets the node `startNode` to be the source of paths in this graph */
+	public void setSource(PrimalNode node) {
+		sourceNode = node;
+	}
+
+	@Override
+	public String toString() {
+		return "Primal " + super.toString();
 	}
 }
