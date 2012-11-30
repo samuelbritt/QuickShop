@@ -5,6 +5,7 @@ import java.util.List;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.text.Editable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,21 +29,32 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	
 	private ExpandListAdapter ExpAdapter;
 	private ArrayList<ExpandListGroup> ExpListItems;
+	private ArrayList<ExpandListGroup> ExpListItems_new;
 	private ExpandableListView ExpandList;
 	Spinner spinner;
-	
+	private String itemChild;
+    private String dropDownCat;
+    private String flag = "false";
+  
+    ArrayList<ExpandListChild> list2 = new ArrayList<ExpandListChild>();
+    
+    private ArrayList<ExpandListGroup> ExpListChild;
+    
 	@Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_expand);
+        String noChild = "";
+        String noDrop = "";
+       
         ExpandList = (ExpandableListView) findViewById(R.id.ExpList);
-       ExpListItems = SetStandardGroups();
+        ExpListItems = SetStandardGroups(noChild, noDrop, flag);
         ExpAdapter = new ExpandListAdapter(TestExpand.this, ExpListItems);
         ExpandList.setAdapter(ExpAdapter);
         
         Intent intent = getIntent();
-        message = intent.getStringExtra(HomeScreen.EXTRA_MESSAGE);
-       
+        message = intent.getStringExtra(TestExpand.EXTRA_MESSAGE);
+      //  itemChild = message;
         // Loading spinner data
         spinner = (Spinner) findViewById(R.id.spinner);
         
@@ -99,50 +111,66 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
         return super.onOptionsItemSelected(item);
     }
    
+    /*
     public ArrayList<ExpandListGroup> SetStandardGroups() {
-		
+    	
+			
+	    	 DatabaseHandler db = new DatabaseHandler(this);
+	    	 List<Category> categories = db.getAllCategories();
+	         
+	         for(Category c : categories){
+	        	 
+	        	 ExpandListGroup gru1 = new ExpandListGroup();
+	            	 String var = c.getCatName();
+	            	 gru1.setName(var);
+	            	 
+	            	 if(var.equals(dropDownCat) && flag.equals("true")){
+	            	//if(var.equals("Wine")){	
+	            	 Toast.makeText(getApplicationContext(), flag, Toast.LENGTH_LONG).show();
+	            		 ExpandListChild child = new ExpandListChild();
+		            	 child.setName("itemChildxxx");
+		            	 list2.add(child);
+		            	 gru1.setItems(list2);
+	            	 }
+	            	 
+	            	 list.add(gru1);
+	            	 
+	        	 }
+	        	 
+	
+		return list;
+    	 
+    }
+    
+    */
+    public ArrayList<ExpandListGroup> SetStandardGroups(String ch , String drop, String flag) {
+    	
     	ArrayList<ExpandListGroup> list = new ArrayList<ExpandListGroup>();
-    	 DatabaseHandler db = new DatabaseHandler(this);
-    	 List<Category> categories = db.getAllCategories();
-         
-         for(Category c : categories){
-        	 ExpandListGroup gru1 = new ExpandListGroup();
-        	 String var = c.getCatName();
-        	 gru1.setName(var);
-        	 list.add(gru1);
-         }
-           return list;
+    	  
+    	DatabaseHandler db = new DatabaseHandler(this);
+    	List<Category> categories = db.getAllCategories();
+    	
+    	for(Category c: categories){
+    		ExpandListGroup gru1 = new ExpandListGroup();
+    		String var = c.getCatName();
+    		gru1.setName(var);
+    		
+    		if(var.equals(drop)){
+                ArrayList<ExpandListChild> list2 = new ArrayList<ExpandListChild>();
+        		ExpandListChild child = new ExpandListChild();
+        		
+        		child.setName(ch);
+        		list2.add(child);
+        		gru1.setItems(list2);
+    		}
+    		list.add(gru1);
+    	}
+    
+    	return list;
     }
-    
-    public void btnAdd (View view){
-    	
-    	Intent intent = new Intent(this , HomeScreen.class);
-    	EditText editText = (EditText) findViewById(R.id.editText2);
-    	String message = editText.getText().toString();
-    	intent.putExtra(EXTRA_MESSAGE, message);
-    	startActivity(intent);
-    	
-    	
-    }
-
-
-	@Override
-	public void onItemSelected(AdapterView<?> parent, View view, int position,
-			long id) {
-		
-		String label = parent.getItemAtPosition(position).toString();
-		 Toast.makeText(parent.getContext(), "You selected: " + label,
-	                Toast.LENGTH_LONG).show();
-	}
-
-
-	@Override
-	public void onNothingSelected(AdapterView<?> arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-    
-    
+    // Make a generic method SetStandardGroups which takes into acc the dropdowncat and itemchild and ignores it when its called 
+    // from the onCreate Method. 
+   
     /*
     public ArrayList<ExpandListGroup> SetStandardGroups() {
     
@@ -186,4 +214,60 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
         return list;
         }
 */
+    public void button1 (View view){
+    	
+    	EditText editText = (EditText) findViewById(R.id.editText2);
+    	Editable temp = editText.getText();
+    	itemChild = temp.toString();
+    	Toast.makeText(getApplicationContext(), itemChild, Toast.LENGTH_LONG).show();
+    	flag = "true";
+    	// ExpListItems = SetStandardGroups(itemChild , dropDownCat) ------------ add these 2 parameters in the SetStandardGroups 
+    	
+    	
+    	ExpListItems = SetStandardGroups(itemChild , dropDownCat, flag);
+    	ExpAdapter = new ExpandListAdapter(TestExpand.this, ExpListItems);
+        ExpandList.setAdapter(ExpAdapter);
+    	//addChild();
+    	
+    	//Intent intent = new Intent(this , TestExpand.class);
+    	//EditText editText = (EditText) findViewById(R.id.editText2);
+    	//String message = editText.getText().toString();
+    	//intent.putExtra(EXTRA_MESSAGE, message);
+    	//startActivity(intent);
+    	
+    	
+    }
+
+
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position,
+			long id) {
+		
+		dropDownCat = parent.getItemAtPosition(position).toString();
+		 Toast.makeText(parent.getContext(), "You selected: " + dropDownCat,
+	                Toast.LENGTH_LONG).show();
+	}
+
+
+	@Override
+	public void onNothingSelected(AdapterView<?> arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+    
+    
 }
+
+/* else { // the case when child and dropdown has been sent
+        		 ExpandListGroup grup1 = new ExpandListGroup();
+        		 String var = c.getCatName();
+        		 grup1.setName(var);
+        		 if(dropDownCat.equals(var)){
+        			 ArrayList<ExpandListChild> listChild = new ArrayList<ExpandListChild>();
+        			 ExpandListChild ch = new ExpandListChild();
+        			 ch.setName(itemChild);
+        			 listChild.add(ch);
+        			 grup1.setItems(listChild);
+        		 }
+ * 
+ */
