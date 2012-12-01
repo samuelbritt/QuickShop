@@ -3,6 +3,7 @@ package com.example.quickshop;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -10,15 +11,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
+@SuppressLint("NewApi")
 public class DatabaseHandler extends SQLiteOpenHelper{
 
 	
 	//All static variables
 	// Database version
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 	
 	// Database Name
-	private static final String DATABASE_NAME = "QuickShopDB";
+	static final String DATABASE_NAME = "QuickShopDB";
 	
 	//store table names
 	private static final String TABLE_STORE = "store";
@@ -48,10 +50,16 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 	private static final String TABLE_ITEMCATEGORY = "item_category";
     
 	//Item Category Columns
-	private static final String KEY_ITEM = "item_id";
+	private static final String KEY_ITEM = "item_name";
 	private static final String KEY_CATEGORY = "category_name";
 	
+	// ItemCatNew Table
+	private static final String TABLE_ITEMCATNEW = "item_category_new";
 	
+	// ItemCatNew cols
+	
+	private static final String KEY_ITEM_NEW = "item_name_new";
+	private static final String KEY_CATEGORY_NEW = "category_name_new";
 	
 	public DatabaseHandler(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -68,12 +76,15 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 		
 		String CREATE_CATEGORY_TABLE = "CREATE TABLE " + TABLE_CATEGORY + "(" + KEY_CATEGORYNAME + " STRING PRIMARY KEY," + CATEGORY_LOCATION + " TEXT," + CATEGORY_ANCHOR_POINT + " TEXT," + CATEGORY_STORE_ID + " INTEGER," + "FOREIGN KEY" + "(" + CATEGORY_STORE_ID + ") REFERENCES " + TABLE_STORE + "(" + KEY_STOREID + "));";  		
 		
-	    String CREATE_ITEM_CAT_TABLE = "CREATE TABLE " + TABLE_ITEMCATEGORY + "(" + KEY_ITEM + " INTEGER PRIMARY KEY," + KEY_CATEGORY + " TEXT," + "FOREIGN KEY(" + KEY_ITEM + ") REFERENCES " + TABLE_ITEM + "(" + KEY_ITEMID + ")," + "FOREIGN KEY(" +  KEY_CATEGORY + ") REFERENCES " + TABLE_CATEGORY + "(" + KEY_CATEGORYNAME + "));";
+	    String CREATE_ITEM_CAT_TABLE = "CREATE TABLE " + TABLE_ITEMCATEGORY + "(" + KEY_ITEM + " STRING PRIMARY KEY," + KEY_CATEGORY + " STRING PRIMARY KEY" + ");";
+	    
+	    String CREATE_ITEM_CAT_NEW_TABLE = "CREATE TABLE " + TABLE_ITEMCATNEW + "(" + KEY_ITEM_NEW + " STRING PRIMARY KEY," + KEY_CATEGORY_NEW + " TEXT" + ");";
 	    
 		db.execSQL(CREATE_STORE_TABLE);
 		db.execSQL(CREATE_ITEM_TABLE);
 		db.execSQL(CREATE_CATEGORY_TABLE);
-		db.execSQL(CREATE_ITEM_CAT_TABLE);
+		//db.execSQL(CREATE_ITEM_CAT_TABLE);
+		db.execSQL(CREATE_ITEM_CAT_NEW_TABLE);
 		
 		
 	}
@@ -81,15 +92,18 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		
-		db.execSQL("DROP TABLE IF EXISTS" + TABLE_STORE);
-		db.execSQL("DROP TABLE IF EXISTS" + TABLE_ITEM);
-		db.execSQL("DROP TABLE IF EXISTS" + TABLE_ITEMCATEGORY);
-		db.execSQL("DROP TABLE IF EXISTS" + TABLE_CATEGORY);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_STORE);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEM);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEMCATEGORY);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORY);
+		db.execSQL("DROP TABLE IF EXISTS " +TABLE_ITEMCATNEW);
 		
 		// create tables again
 		onCreate(db);
 		
 	}
+	
+	
 	
 	/**
 	 * THE INSERT TABLE FUNCTIONS
@@ -144,7 +158,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		
-		values.put(KEY_ITEM , itemCat.getItemID());
+		values.put(KEY_ITEM , itemCat.getItemName());
 		values.put(KEY_CATEGORY, itemCat.getCatName());
 		
 		db.insert(TABLE_ITEMCATEGORY, null, values);
@@ -152,6 +166,19 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 		
 	}
 
+	// adding ItemCatNew details
+	
+	void addItemCatNew(ItemCatNew itemCatNew){
+		 SQLiteDatabase db = this.getWritableDatabase();
+		 ContentValues values = new ContentValues();
+		 
+		 values.put(KEY_ITEM_NEW, itemCatNew.getItemName());
+		 values.put(KEY_CATEGORY_NEW, itemCatNew.getCatName());
+		 
+		 db.insert(TABLE_ITEMCATNEW, null, values);
+		 db.close();
+	}
+	 
 	/**
 	 * THE SELECT FROM TABLE FUNCTIONS (READING ROWS OF THE TABLE)
 	 */
@@ -161,8 +188,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 		
 		SQLiteDatabase db = this.getReadableDatabase();
 		
-		Cursor cursor = db.query(TABLE_STORE, new String[] { KEY_STOREID , STORE_NAME, STORE_LOC_COORDINATES}, KEY_STOREID + "=?" , new String[] {String.valueOf(STORE_NAME)}, null, null, null, null);
-		
+		//Cursor cursor = db.query(TABLE_STORE, new String[] { KEY_STOREID , STORE_NAME, STORE_LOC_COORDINATES}, KEY_STOREID + " = " + id , new String[] {String.valueOf(STORE_NAME)}, null, null, null, null);
+		Cursor cursor = db.query(TABLE_CATEGORY, new String[] {STORE_NAME}, null, new String [] {KEY_STOREID + "=" + id}, null, null, null, null);
 		if(cursor != null)
 			cursor.moveToFirst();
 		
@@ -172,6 +199,68 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 		
 	}
 	
+	
+	// getting itemCategories 
+	
+	public ItemCategory getItems(String category){
+		
+		SQLiteDatabase db = this.getReadableDatabase();
+		
+		Cursor cursor = db.query(TABLE_ITEMCATEGORY, new String[] {KEY_ITEM , KEY_CATEGORY}, KEY_CATEGORY + "=?", new String[] {String.valueOf(KEY_ITEM)}, null, null, null, null);
+		
+		if(cursor != null)
+			cursor.moveToFirst();
+		
+		ItemCategory itemCat = new ItemCategory(cursor.getString(0), cursor.getString(1));
+		
+		return itemCat;
+		
+	}
+	
+	// testing 
+public ItemCatNew getItemsNew(String category){
+		
+		SQLiteDatabase db = this.getReadableDatabase();
+		
+		//Cursor cursor = db.query(TABLE_ITEMCATNEW, new String[] {KEY_ITEM_NEW , KEY_CATEGORY_NEW}, KEY_CATEGORY_NEW + "=" + category, new String[] {String.valueOf(KEY_ITEM_NEW)}, null, null, null, null);
+		//Cursor cursor = db.query(TABLE_ITEMCATNEW, new String[] {KEY_ITEM_NEW, KEY_CATEGORY_NEW}, null, new String[] {KEY_CATEGORY_NEW + "=?"}, null, null, null);
+		Cursor cursor = db.query(TABLE_ITEMCATNEW, new String[] { KEY_ITEM_NEW , KEY_CATEGORY_NEW }, KEY_CATEGORY_NEW + "=?", new String[] {String.valueOf(category) }, null, null, null, null);
+		if(cursor != null)
+			cursor.moveToFirst();
+		
+		ItemCatNew itemCatNew = new ItemCatNew(cursor.getString(0), cursor.getString(1));
+		
+		return itemCatNew;
+		
+	}
+	
+public List<ItemCatNew> getItemsNewList(String category){
+	List<ItemCatNew> itemList = new ArrayList<ItemCatNew>();
+	SQLiteDatabase db = this.getReadableDatabase();
+	
+	//Cursor cursor = db.query(TABLE_ITEMCATNEW, new String[] {KEY_ITEM_NEW , KEY_CATEGORY_NEW}, KEY_CATEGORY_NEW + "=" + category, new String[] {String.valueOf(KEY_ITEM_NEW)}, null, null, null, null);
+	//Cursor cursor = db.query(TABLE_ITEMCATNEW, new String[] {KEY_ITEM_NEW, KEY_CATEGORY_NEW}, null, new String[] {KEY_CATEGORY_NEW + "=?"}, null, null, null);
+	Cursor cursor = db.query(TABLE_ITEMCATNEW, new String[] { KEY_ITEM_NEW , KEY_CATEGORY_NEW }, KEY_CATEGORY_NEW + "=?", new String[] {String.valueOf(category) }, null, null, null, null);
+	
+	if(cursor.moveToFirst()){
+		do {
+			ItemCatNew itemcatnew = new ItemCatNew();
+			itemcatnew.setItemName(cursor.getString(0));
+			itemcatnew.setCatName(cursor.getString(1));
+			
+			itemList.add(itemcatnew);
+		} while(cursor.moveToNext());
+	}
+	return itemList;
+}
+	
+	// deleting itemCategories
+	
+	public void deleteItems(){
+		SQLiteDatabase db = this.getWritableDatabase();
+		String deleteSQL = "DELETE FROM " + TABLE_ITEMCATNEW;
+		db.execSQL(deleteSQL);
+	}
 	
    // getting all stores 
 	
@@ -226,5 +315,27 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 	}
 
 		return categoryList;
+	}
+	
+	
+	
+	public List<ItemCatNew> testItem(String category) { //String category
+		List<ItemCatNew> itemCatNewList = new ArrayList<ItemCatNew>();
+		
+		String selectItemCat = "SELECT * FROM " + TABLE_ITEMCATNEW;//  + " WHERE " + KEY_CATEGORY_NEW + " = " + category;
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.query(TABLE_ITEMCATNEW, new String[] {KEY_ITEM_NEW, KEY_CATEGORY_NEW}, null, new String[] {KEY_CATEGORY_NEW + "=?"}, null, null, null);
+		
+		if(cursor.moveToFirst()){
+			
+			do{
+				ItemCatNew itc = new ItemCatNew();
+				itc.setItemName(cursor.getString(0));
+				itc.setCatName(cursor.getString(1));
+				
+				itemCatNewList.add(itc);
+			} while (cursor.moveToNext());
+		}
+	return itemCatNewList;
 	}
 }

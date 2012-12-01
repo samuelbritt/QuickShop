@@ -1,7 +1,14 @@
 package com.example.quickshop;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+
+
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -36,9 +43,13 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
     private String dropDownCat;
     private String flag = "false";
   
-    ArrayList<ExpandListChild> list2 = new ArrayList<ExpandListChild>();
+    //ArrayList<ExpandListChild> list2 = new ArrayList<ExpandListChild>();
     
     private ArrayList<ExpandListGroup> ExpListChild;
+    //Hashtable itemCatHash = new Hashtable();
+    
+    HashMap itemCatMap = new HashMap();
+    ArrayList itemCatList = new ArrayList();
     
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,7 +57,43 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
         setContentView(R.layout.activity_test_expand);
         String noChild = "";
         String noDrop = "";
+      // DatabaseHandler db = new DatabaseHandler(this);
        
+       //inserting stores in the store table 
+      // Log.d("Insert: ","Inserting ..");
+       //db.addItemCatNew(new ItemCatNew("Bread2", "Breads"));
+        
+     //  List<Store> stores = (List<Store>) db.getStore(1);
+       
+       /*
+       db.deleteItems();
+        Log.d("Reading: ", "Reading..");
+        //ItemCatNew itc =  (ItemCatNew) db.getItemsNew("Breads");
+        List<ItemCatNew> itcList = (List<ItemCatNew>) db.getItemsNewList("Wine Coolers");
+        
+        for(ItemCatNew itc : itcList){
+
+            String log = "Cat name: " + itc.getCatName() +  " itemName: " + itc.getItemName();
+             	Log.d("Name: ", log);
+             
+        }
+       
+       */
+        /*
+        DatabaseHandler db = new DatabaseHandler(this);
+    	db.onCreate(null);
+    	Log.d("Insert:", "Inserting..");
+    	db.addItemCatNew(new ItemCatNew("Kunal", "Malhotra"));
+    	
+    	Log.d("Reading", "Reading cats");
+    	List<ItemCatNew> items = (List<ItemCatNew>) db.getItemsNew("Malhotra");
+    	
+    	for(ItemCatNew ic : items){
+    		String log = "ItemName " + ic.getItemName() + ", ItemCat " + ic.getCatName();
+    		Log.d("Name: ", log);
+    	}
+    	*/
+        
         ExpandList = (ExpandableListView) findViewById(R.id.ExpList);
         ExpListItems = SetStandardGroups(noChild, noDrop, flag);
         ExpAdapter = new ExpandListAdapter(TestExpand.this, ExpListItems);
@@ -150,23 +197,39 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
     	DatabaseHandler db = new DatabaseHandler(this);
     	List<Category> categories = db.getAllCategories();
     	
+    	// Add function for getItemCatNew
+    	
     	for(Category c: categories){
     		ExpandListGroup gru1 = new ExpandListGroup();
     		String var = c.getCatName();
     		gru1.setName(var);
     		
-    		if(var.equals(drop)){
-                ArrayList<ExpandListChild> list2 = new ArrayList<ExpandListChild>();
-        		ExpandListChild child = new ExpandListChild();
-        		
-        		child.setName(ch);
-        		list2.add(child);
-        		gru1.setItems(list2);
+    		if(flag.equals("true")){
+    			//if(db.getItemsNew(var).getItemName().equals(null)){
+    				
+    		//	} 
+    			//else {
+    				List<ItemCatNew> items = (List<ItemCatNew>) db.getItemsNewList(var);
+    	    		//if(var.equals(drop)){
+    	            ArrayList<ExpandListChild> list2 = new ArrayList<ExpandListChild>();
+    	        	for(ItemCatNew itc : items){
+    	        		ExpandListChild child = new ExpandListChild();
+    	        		child.setName(itc.getItemName());
+    	        		list2.add(child);
+    	           	}
+    	            	
+    	        	gru1.setItems(list2);
+    	    		//}
+    			//} // else end
+    	
     		}
-    		list.add(gru1);
+        	list.add(gru1);
+    		
     	}
     
     	return list;
+
+
     }
     // Make a generic method SetStandardGroups which takes into acc the dropdowncat and itemchild and ignores it when its called 
     // from the onCreate Method. 
@@ -221,13 +284,32 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
     	itemChild = temp.toString();
     	Toast.makeText(getApplicationContext(), itemChild, Toast.LENGTH_LONG).show();
     	flag = "true";
+    	
+    // Add Insert statements
+    	DatabaseHandler db = new DatabaseHandler(this);
+    	db.addItemCatNew(new ItemCatNew(itemChild, dropDownCat));
     	// ExpListItems = SetStandardGroups(itemChild , dropDownCat) ------------ add these 2 parameters in the SetStandardGroups 
+    	
+    	//itemCatList.add("good");
+    	//itemCatList.add("bad");
+    	//itemCatList.add(itemChild);
+    	
+    	//itemCatMap.put(dropDownCat, itemCatList);
+    	//ArrayList l1 = (ArrayList) itemCatMap.get(dropDownCat);
+    	//Iterator iter = l1.iterator();
+    	//ArrayList L = (ArrayList) itemCatMap.get(dropDownCat);
+    	//Iterator it = L.iterator();
+    	
+    
+    	//while(it.hasNext()){
+    		//Toast.makeText(getApplicationContext(),"The value is" + it.next(), Toast.LENGTH_LONG).show();
+    	//}
+    	
     	
     	
     	ExpListItems = SetStandardGroups(itemChild , dropDownCat, flag);
     	ExpAdapter = new ExpandListAdapter(TestExpand.this, ExpListItems);
         ExpandList.setAdapter(ExpAdapter);
-    	//addChild();
     	
     	//Intent intent = new Intent(this , TestExpand.class);
     	//EditText editText = (EditText) findViewById(R.id.editText2);

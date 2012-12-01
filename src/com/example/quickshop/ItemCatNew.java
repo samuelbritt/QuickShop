@@ -1,17 +1,15 @@
 package com.example.quickshop;
 
-public class ItemCategory {
-	
-	
+public class ItemCatNew {
 	String itemName;
 	String categoryName;
 	
 	
-	public ItemCategory(){
+	public ItemCatNew(){
 		
 	}
 	
-	public ItemCategory(String itemName, String categoryName){
+	public ItemCatNew(String itemName, String categoryName){
 		this.itemName = itemName;
 		this.categoryName = categoryName;
 	}
