@@ -57,6 +57,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
         setContentView(R.layout.activity_test_expand);
         String noChild = "";
         String noDrop = "";
+        // INSERT STATEMENTS
       // DatabaseHandler db = new DatabaseHandler(this);
        
        //inserting stores in the store table 
