@@ -57,8 +57,13 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
         setContentView(R.layout.activity_test_expand);
         String noChild = "";
         String noDrop = "";
-        // INSERT STATEMENTS
-      // DatabaseHandler db = new DatabaseHandler(this);
+        
+        // INSERT STATEMENTS go here for the first time . You need to remove them after inserting to avoid Key constraint. 
+      
+        
+        
+        
+        // DatabaseHandler db = new DatabaseHandler(this);
        
        //inserting stores in the store table 
       // Log.d("Insert: ","Inserting ..");
