@@ -1,5 +1,6 @@
 package com.example.quickshop.graphs;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,10 +15,12 @@ public class Store {
 	PrimalGraph P;
 	DualGraph D;
 	PathFinderAllPairsShortest<DualNode> APSP_Finder;
+	ArrayList<Category> categories;
 
 	public Store(int aisleCount, int nodesPerAisle, Coordinates startCoords) {
 		P = new PrimalGraph(aisleCount, nodesPerAisle, startCoords);
 		D = new DualGraph(P);
+		categories = new ArrayList<Category>();
 		
 		DijkstraFactory<DualNode> dijFact = new DijkstraFactory<DualNode>();
 		APSP_Finder = new PathFinderAllPairsShortest<DualNode>(D, dijFact);
@@ -32,6 +35,15 @@ public class Store {
 		Category category = new Category(categoryName);
 		addNodesFromAllSegments(category, segments);
 		return category;
+	}
+	
+	public Category getCategory(String categoryName) {
+		for (Category cat: this.categories) {
+			if (cat.getName().equals(categoryName)) {
+				return cat;
+			}
+		}
+		return null;
 	}
 
 	private void addNodesFromAllSegments(Category category, Segment[] segments) {
@@ -54,6 +66,18 @@ public class Store {
 	/** returns path String from source the category*/
 	public String getPathString(DualNode source, Category cat) {
 		return cat.getPathString(source, APSP_Finder);
+	}
+	
+	public void optimalPathSortByName(List<String> categoryNames) {
+		ArrayList<Category> categories = new ArrayList<Category>();
+		for (String name : categoryNames) {
+			categories.add(this.getCategory(name));
+		}
+		optimalPathSort(categories);
+		
+		for (int i = 0; i < categoryNames.size(); i++) {
+			categoryNames.set(i, categories.get(i).getName());
+		}
 	}
 
 	/**
