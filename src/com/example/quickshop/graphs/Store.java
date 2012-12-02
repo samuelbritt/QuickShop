@@ -68,6 +68,7 @@ public class Store {
 		return cat.getPathString(source, APSP_Finder);
 	}
 	
+	/** Given a list of category names, sorts the list in place */
 	public void optimalPathSortByName(List<String> categoryNames) {
 		ArrayList<Category> categories = new ArrayList<Category>();
 		for (String name : categoryNames) {
