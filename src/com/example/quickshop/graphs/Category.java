@@ -31,6 +31,10 @@ public class Category implements Comparable<Object> {
 	public void addNode(DualNode node) {
 		nodes.add(node);
 	}
+	
+	public String getName() {
+		return name;
+	}
 
 	public String getPathString(DualNode source,
 	                            PathFinderAllPairsShortest<DualNode> APSP_Finder) {
