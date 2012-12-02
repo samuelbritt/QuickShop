@@ -14,5 +14,6 @@
     <string name="title_activity_home_screen">HomeScreen</string>
     <string name="title_activity_test_exapand_list">TestExapandList</string>
     <string name="title_activity_test_expand">TestExpand</string>
-
+	<string name="refresh_sort">Refresh</string>
+    
 </resources>

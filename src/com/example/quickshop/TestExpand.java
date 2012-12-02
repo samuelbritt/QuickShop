@@ -94,7 +94,6 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
         getMenuInflater().inflate(R.menu.activity_test_expand, menu);
         return true;
     }
-
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -102,8 +101,15 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
+            case R.id.refresh_sort:
+            	sort_categories();
+            	return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    
+    private void sort_categories() {
+    	return;
     }
    
    
@@ -170,8 +176,6 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 		// TODO Auto-generated method stub
 		
 	}
-    
-    
 }
 
 
