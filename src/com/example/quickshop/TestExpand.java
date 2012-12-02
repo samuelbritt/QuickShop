@@ -1,11 +1,15 @@
 package com.example.quickshop;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.SQLException;
 import android.text.Editable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +35,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	private String itemChild;
     private String dropDownCat;
     private String addItemButtonClickflag = "false";
+    DatabaseHandler db = new DatabaseHandler(this);
     
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,6 +43,19 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
         setContentView(R.layout.activity_test_expand);
         String noChild = "";
         String noDrop = "";
+        
+        
+        try {
+        	db.createDataBase();
+        } catch (IOException ioe) {
+        	throw new Error("Unable to create DB");
+        }
+        
+        try {
+        	db.openDataBase();
+        } catch (SQLException sqle){
+        	throw sqle;
+        }
         
         // INSERT STATEMENTS go here for the first time . You need to remove them after inserting to avoid Key constraint. 
         
@@ -63,8 +81,8 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	@SuppressWarnings("null")
 	private void loadSpinnerData() {
 	
-		DatabaseHandler dbspin = new DatabaseHandler(this);
-		List<Category> catData = dbspin.getAllCategories();
+		//DatabaseHandler dbspin = new DatabaseHandler(this);
+		List<Category> catData = db.getAllCategories();
 		
 		ArrayList<String> catStringData = new ArrayList<String>();
 		
@@ -111,7 +129,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
     	
     	ArrayList<ExpandListGroup> groupList = new ArrayList<ExpandListGroup>();
     	  
-    	DatabaseHandler db = new DatabaseHandler(this);
+    	//DatabaseHandler db = new DatabaseHandler(this);
     	List<Category> categories = db.getAllCategories();
     	
     	for(Category c: categories){
@@ -146,7 +164,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
     	itemChild = temp.toString();
     	addItemButtonClickflag = "true";
    
-    	DatabaseHandler db = new DatabaseHandler(this);
+    	//DatabaseHandler db = new DatabaseHandler(this);
     	db.addItemCatNew(new ItemCatNew(itemChild, dropDownCat));
     	
     	ExpListItems = SetStandardGroups(itemChild , dropDownCat, addItemButtonClickflag);
