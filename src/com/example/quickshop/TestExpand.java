@@ -1,6 +1,5 @@
 package com.example.quickshop;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +8,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.SQLException;
 import android.text.Editable;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -78,7 +76,6 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 
 	/** 
 	 * LOADING THE DROP DOWN LIST */
-	@SuppressWarnings("null")
 	private void loadSpinnerData() {
 	
 		//DatabaseHandler dbspin = new DatabaseHandler(this);
