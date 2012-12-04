@@ -24,6 +24,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 	// Database version
 	private static final int DATABASE_VERSION = 2;
 	private static String DB_PATH = "/data/data/com.example.quickshop/databases/";
+	//private static String DB_PATH = "/Users/kmalhotra7/Documents/workspace/com.example.quickshop.MainActivity/assets/";
 	// Database Name
 	static final String DATABASE_NAME = "QuickShopDB";
 	

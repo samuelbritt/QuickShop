@@ -10,10 +10,19 @@ package com.example.quickshop.graphs;
 public class Segment {
 	private Coordinates start;
 	private Coordinates end;
+	
+	public Segment(int startx, int starty, int endx, int endy) {
+		setCoords(new Coordinates(startx, starty), new Coordinates(endx, endy));
+	}
 
 	public Segment(Coordinates start, Coordinates end) {
+		setCoords(start, end);
+	}
+	
+	private void setCoords(Coordinates start, Coordinates end) {
 		this.start = start;
 		this.end = end;
+		
 	}
 
 	public Coordinates getStart() {
