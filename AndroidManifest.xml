@@ -21,13 +21,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".HomeScreen"
-            android:label="@string/title_activity_home_screen" android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.quickshop.MainActivity" />
-        </activity>
-        <activity
             android:name=".TestExpand"
             android:label="@string/title_activity_test_expand" android:theme="@style/AppTheme">
             <meta-data

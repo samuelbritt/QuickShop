@@ -1,7 +1,6 @@
 <resources>
 
     <string name="app_name">QuickShop</string>
-    <string name="hello_world">Kunal</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">Quick Shop</string>
     <string name="welcome_screen">Welcome to Quick Shop</string>
@@ -9,10 +8,6 @@
     <string name="enter">Enter</string>
     <string name="itemName">Item Name:</string>
     <string name="enterItemName">Enter item name</string>
-    <string name="title_MainToHome">Home Screen</string>
-    <string name="title_activity_main_to_home">MainToHome</string>
-    <string name="title_activity_home_screen">HomeScreen</string>
-    <string name="title_activity_test_exapand_list">TestExapandList</string>
     <string name="title_activity_test_expand">TestExpand</string>
 	<string name="refresh_sort">Refresh</string>
 	<color name="Black">#000000</color>

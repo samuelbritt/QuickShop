@@ -10,7 +10,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.SQLException;
 import android.text.Editable;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,12 +47,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
         String noChild = "";
         String noDrop = "";
         
-        List<ItemCatNew> itcList = (List<ItemCatNew>) db.getItemsNewList("Breads");
         
-        for(ItemCatNew itc : itcList) {
-        	String log = "item is " + itc.getItemName() + " " + " Cat name is " + itc.getCatName();
-        	Log.d("Name: " , log);
-        }
         
        db.deleteItems();
         try {
@@ -89,7 +83,6 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 
 	/** 
 	 * LOADING THE DROP DOWN LIST */
-	@SuppressWarnings("null")
 	private void loadSpinnerData() {
 	
 		//DatabaseHandler dbspin = new DatabaseHandler(this);
