@@ -24,7 +24,7 @@ import android.widget.Spinner;
 import android.support.v4.app.NavUtils;
 import com.example.quickshop.R;
 
-public class TestExpand extends Activity implements OnItemSelectedListener, OnNavigationListener {
+public class TestExpand extends Activity implements OnItemSelectedListener {
 	List<String> Cat = new ArrayList<String>();
 	public final static String EXTRA_MESSAGE = "com.example.quickshop.MESSAGE";
 	String message;
@@ -89,14 +89,24 @@ public class TestExpand extends Activity implements OnItemSelectedListener, OnNa
     		storeNames.add(name);
     	}
     	
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, storeNames);
-		dataAdapter
-        .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		
 		ActionBar bar = getActionBar();
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-		bar.setListNavigationCallbacks(dataAdapter, this);
+        bar.setListNavigationCallbacks(
+                // Specify a SpinnerAdapter to populate the dropdown list.
+                new ArrayAdapter<String>(
+                        bar.getThemedContext(),
+                        android.R.layout.simple_list_item_1,
+                        storeNames),
+
+                // Provide a listener to be called when an item is selected.
+                new ActionBar.OnNavigationListener() {
+                    public boolean onNavigationItemSelected(
+                            int position, long id) {
+                        // Take action here, e.g. switching to the
+                        // corresponding fragment.
+                        return chooseStore(position, id);
+                    }
+                });
     }
 
 	/** 
@@ -241,8 +251,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener, OnNa
 
 
 	/** Store chooser */
-	@Override
-	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+	public boolean chooseStore(int itemPosition, long itemId) {
 		System.out.println("Chose a store");
 		return false;
 	}

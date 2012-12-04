@@ -4,7 +4,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="14"
         android:targetSdkVersion="17"/>
 
     <application
@@ -22,7 +22,7 @@
         </activity>
         <activity
             android:name=".TestExpand"
-            android:label="@string/title_activity_test_expand" android:theme="@style/AppTheme">
+            android:label="" android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.quickshop.MainActivity" />
