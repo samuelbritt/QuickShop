@@ -5,10 +5,12 @@ import java.util.ArrayList;
 
 import com.example.quickshop.R;
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ExpandListAdapter extends BaseExpandableListAdapter{
@@ -78,7 +80,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter{
 		return groupPosition;
 	}
 
-	public View getGroupView(int groupPosition, boolean isLastChild, View view,
+	public View getGroupView(int groupPosition, boolean isExpanded, View view,
 			ViewGroup parent) {
 		ExpandListGroup group = (ExpandListGroup) getGroup(groupPosition);
 		if (view == null) {
@@ -87,8 +89,16 @@ public class ExpandListAdapter extends BaseExpandableListAdapter{
 		}
 		TextView tv = (TextView) view.findViewById(R.id.tvGroup);
 		tv.setText(group.getName());
-		// TODO Auto-generated method stub
+		
+		ImageView iv = (ImageView) view.findViewById(R.id.ivGroup);
+		setGroupExpandIcon(iv, isExpanded);
+
 		return view;
+	}
+	
+	private void setGroupExpandIcon(ImageView iv, boolean isExpanded) {
+		int imageID = isExpanded ? R.drawable.ic_action_collapse : R.drawable.ic_action_expand;
+		iv.setImageResource(imageID);
 	}
 
 	public boolean hasStableIds() {

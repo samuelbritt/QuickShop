@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.SQLException;
-import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,7 +34,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	Spinner spinner;
 	private String itemChild;
     private String dropDownCat;
-    private String addItemButtonClickflag = "false";
+    private boolean addItemButtonClickflag = false;
     DatabaseHandler db = new DatabaseHandler(this);
     
     Hashtable<String, Integer> hashCategories = new Hashtable<String, Integer>();
@@ -148,7 +147,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
     }
    
    
-    public ArrayList<ExpandListGroup> SetStandardGroups(String ch , String drop, String btnClickflag) {
+    public ArrayList<ExpandListGroup> SetStandardGroups(String ch , String drop, boolean btnClickflag) {
     	
     	ArrayList<ExpandListGroup> groupList = new ArrayList<ExpandListGroup>();
     	  
@@ -161,7 +160,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
     		String var = c.getCatName();
     		group.setName(var);
     		
-    		if(btnClickflag.equals("true")){
+    		if(btnClickflag){
     			
     				List<ItemCatNew> items = (List<ItemCatNew>) db.getItemsNewList(var);
     	    		ArrayList<ExpandListChild> childList = new ArrayList<ExpandListChild>();
@@ -193,24 +192,17 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
     
     public void btnAddItem (View view){
     	
-    	final EditText editText = (EditText) findViewById(R.id.editText2);
-    	Editable temp = editText.getText();
-    	itemChild = temp.toString();
-    	addItemButtonClickflag = "true";
+
+    	EditText editText = (EditText) findViewById(R.id.editText2);
+    	itemChild = editText.getText().toString();
+    	editText.setText("");
+    	addItemButtonClickflag = true;
    
     	db.addItemCatNew(new ItemCatNew(itemChild, dropDownCat));
     	
     	ExpListItems = SetStandardGroups(itemChild , dropDownCat, addItemButtonClickflag);
     	ExpAdapter = new ExpandListAdapter(TestExpand.this, ExpListItems);
-        ExpandList.setAdapter(ExpAdapter);
-        
-        editText.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editText.setText("");
-            }
-        });
-        
+        ExpandList.setAdapter(ExpAdapter);        
     }
 
 
