@@ -163,8 +163,8 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
     public void btnAddItem (View view){
     	
     	EditText editText = (EditText) findViewById(R.id.editText2);
-    	Editable temp = editText.getText();
-    	itemChild = temp.toString();
+    	itemChild = editText.getText().toString();
+    	editText.setText("");
     	addItemButtonClickflag = true;
    
     	//DatabaseHandler db = new DatabaseHandler(this);
