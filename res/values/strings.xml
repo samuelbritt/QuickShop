@@ -15,5 +15,11 @@
     <string name="title_activity_test_exapand_list">TestExapandList</string>
     <string name="title_activity_test_expand">TestExpand</string>
 	<string name="refresh_sort">Refresh</string>
+	<color name="Black">#000000</color>
+	<color name="Blue">#0000FF</color>
+	<color name="White">#FFFFFF</color>
+    <color name="ExpandChildBackground">#657383</color>
+    <color name="ExpandGroupBackground">#000000</color>
+	
     
 </resources>

@@ -288,6 +288,23 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 		 db.insert(TABLE_ITEMCATNEW, null, values);
 		 db.close();
 	}
+	
+	
+	/**
+	 * UPDATE FUNCTIONS
+	 */
+	
+	public int updateCategory(Category category){
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put(KEY_CATEGORYNAME, category.getCatName());
+		values.put(CATEGORY_LOCATION, category.getCatLoc());
+		values.put(CATEGORY_ANCHOR_POINT, category.getAnchPt());
+		values.put(CATEGORY_STORE_ID, category.getStoreID());
+		
+		// update row
+		return db.update(TABLE_CATEGORY, values, KEY_CATEGORYNAME + " =?", new String[] {String.valueOf(category.getCatName())});
+	}
 	 
 	/**
 	 * THE SELECT FROM TABLE FUNCTIONS (READING ROWS OF THE TABLE)

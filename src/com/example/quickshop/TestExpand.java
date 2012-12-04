@@ -1,8 +1,9 @@
 package com.example.quickshop;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 import android.os.Bundle;
 import android.app.Activity;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -37,14 +39,23 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
     private String addItemButtonClickflag = "false";
     DatabaseHandler db = new DatabaseHandler(this);
     
-	@Override
+    Hashtable<String, Integer> hashCategories = new Hashtable<String, Integer>();
+	
+    @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_expand);
         String noChild = "";
         String noDrop = "";
         
+        List<ItemCatNew> itcList = (List<ItemCatNew>) db.getItemsNewList("Breads");
         
+        for(ItemCatNew itc : itcList) {
+        	String log = "item is " + itc.getItemName() + " " + " Cat name is " + itc.getCatName();
+        	Log.d("Name: " , log);
+        }
+        
+       db.deleteItems();
         try {
         	db.createDataBase();
         } catch (IOException ioe) {
@@ -117,7 +128,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+            	NavUtils.navigateUpFromSameTask(this);
                 return true;
             case R.id.refresh_sort:
             	sort_categories();
@@ -127,6 +138,19 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
     }
     
     private void sort_categories() {
+    	 
+    	Enumeration<String> e = hashCategories.keys();
+         ArrayList<String> categoryListForSort = new ArrayList<String>();
+        
+         while(e.hasMoreElements()){
+         	Object k = e.nextElement();
+         	categoryListForSort.add(k.toString());
+         	
+         }
+         
+         // Need to call the optimal path method - to ask Sam what does he mean by aisle count
+        
+        
     	return;
     }
    
@@ -148,7 +172,11 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
     			
     				List<ItemCatNew> items = (List<ItemCatNew>) db.getItemsNewList(var);
     	    		ArrayList<ExpandListChild> childList = new ArrayList<ExpandListChild>();
-    	        	
+    	        	if(items.isEmpty()){
+    	        		
+    	        	} else {
+    	        		hashCategories.put(var, 1);
+    	        	}
     	    		for(ItemCatNew itc : items){
     	        		ExpandListChild child = new ExpandListChild();
     	        		child.setName(itc.getItemName());
@@ -157,7 +185,14 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
     	            	
     	        	group.setItems(childList);
     	   		}
-        	groupList.add(group);
+    		
+    		List<ItemCatNew> items = (List<ItemCatNew>) db.getItemsNewList(var);
+    		if(items.isEmpty()){
+    			
+    		} else {
+    			groupList.add(group);
+    		}
+        
       	}
    
     	return groupList;
@@ -165,18 +200,24 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
     
     public void btnAddItem (View view){
     	
-    	EditText editText = (EditText) findViewById(R.id.editText2);
+    	final EditText editText = (EditText) findViewById(R.id.editText2);
     	Editable temp = editText.getText();
     	itemChild = temp.toString();
     	addItemButtonClickflag = "true";
    
-    	//DatabaseHandler db = new DatabaseHandler(this);
     	db.addItemCatNew(new ItemCatNew(itemChild, dropDownCat));
     	
     	ExpListItems = SetStandardGroups(itemChild , dropDownCat, addItemButtonClickflag);
     	ExpAdapter = new ExpandListAdapter(TestExpand.this, ExpListItems);
         ExpandList.setAdapter(ExpAdapter);
-    	
+        
+        editText.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editText.setText("");
+            }
+        });
+        
     }
 
 
@@ -194,6 +235,12 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	/*
+	public void sendForSort(View view) {
+		Toast.makeText(getApplicationContext(), "method reached", Toast.LENGTH_LONG).show();
+	}
+	*/
 }
 
 
