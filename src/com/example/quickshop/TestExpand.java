@@ -32,7 +32,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	Spinner spinner;
 	private String itemChild;
     private String dropDownCat;
-    private String addItemButtonClickflag = "false";
+    private boolean addItemButtonClickflag = false;
     DatabaseHandler db = new DatabaseHandler(this);
     
 	@Override
@@ -128,7 +128,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
     }
    
    
-    public ArrayList<ExpandListGroup> SetStandardGroups(String ch , String drop, String btnClickflag) {
+    public ArrayList<ExpandListGroup> SetStandardGroups(String ch , String drop, boolean btnClickflag) {
     	
     	ArrayList<ExpandListGroup> groupList = new ArrayList<ExpandListGroup>();
     	  
@@ -141,7 +141,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
     		String var = c.getCatName();
     		group.setName(var);
     		
-    		if(btnClickflag.equals("true")){
+    		if(btnClickflag){
     			
     				List<ItemCatNew> items = (List<ItemCatNew>) db.getItemsNewList(var);
     	    		ArrayList<ExpandListChild> childList = new ArrayList<ExpandListChild>();
@@ -165,7 +165,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
     	EditText editText = (EditText) findViewById(R.id.editText2);
     	Editable temp = editText.getText();
     	itemChild = temp.toString();
-    	addItemButtonClickflag = "true";
+    	addItemButtonClickflag = true;
    
     	//DatabaseHandler db = new DatabaseHandler(this);
     	db.addItemCatNew(new ItemCatNew(itemChild, dropDownCat));
