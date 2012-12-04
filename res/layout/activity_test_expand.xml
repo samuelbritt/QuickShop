@@ -9,56 +9,53 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="15dip"
-        android:orientation="horizontal" >
+        android:background="@color/light_grey"
+        android:orientation="vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dip" >
 
-        <!--
-    <TextView
-        android:id="@+id/itemName"
-        android:layout_width="0dip"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:text="ItemName" />
-        -->
-
-        <EditText
-            android:id="@+id/editText2"
-            android:layout_width="0dp"
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="@string/enterItemName" >
+            android:layout_marginTop="10dip"
+            android:orientation="horizontal" >
 
-            <requestFocus />
-        </EditText>
+            <EditText
+                android:id="@+id/editText2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="@string/enterItemName" >
 
-        <ImageView
-            android:id="@+id/button1"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:clickable="true"
-            android:onClick="btnAddItem"
-            android:src="@drawable/ic_action_add_item" />
+                <requestFocus />
+            </EditText>
 
+            <ImageButton
+                android:id="@+id/button1"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="40dip"
+                android:layout_height="40dip"
+                android:layout_gravity="center"
+                android:clickable="true"
+                android:onClick="btnAddItem"
+                android:src="@drawable/add_item_selector" />
+        </LinearLayout>
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp" />
     </LinearLayout>
-
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:layout_marginLeft="15dp" />
 
     <ExpandableListView
         android:id="@+id/ExpList"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/editText2"
-        android:groupIndicator="@null"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp" >
+        android:groupIndicator="@null" >
     </ExpandableListView>
 
 </LinearLayout>
