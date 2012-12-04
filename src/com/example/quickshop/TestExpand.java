@@ -6,13 +6,14 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import android.os.Bundle;
+import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ActionBar.OnNavigationListener;
 import android.content.Intent;
 import android.database.SQLException;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -23,7 +24,7 @@ import android.widget.Spinner;
 import android.support.v4.app.NavUtils;
 import com.example.quickshop.R;
 
-public class TestExpand extends Activity implements OnItemSelectedListener {
+public class TestExpand extends Activity implements OnItemSelectedListener, OnNavigationListener {
 	List<String> Cat = new ArrayList<String>();
 	public final static String EXTRA_MESSAGE = "com.example.quickshop.MESSAGE";
 	String message;
@@ -72,13 +73,31 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
         message = intent.getStringExtra(TestExpand.EXTRA_MESSAGE);
         // Loading spinner data
         spinner = (Spinner) findViewById(R.id.spinner);
-       
         spinner.setOnItemSelectedListener(this);
-        
         loadSpinnerData();
-        
+
+        loadStoreChooser();
     }
- 
+    
+    
+    private void loadStoreChooser() {
+    	List<Store> storeData = db.getAllStores();
+    	ArrayList<String> storeNames = new ArrayList<String>();
+    	for (Store s: storeData) {
+    		String name = s.getName();
+    		System.out.println(name);
+    		storeNames.add(name);
+    	}
+    	
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, storeNames);
+		dataAdapter
+        .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		
+		ActionBar bar = getActionBar();
+        bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		bar.setListNavigationCallbacks(dataAdapter, this);
+    }
 
 	/** 
 	 * LOADING THE DROP DOWN LIST */
@@ -145,7 +164,6 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
         
     	return;
     }
-   
    
     public ArrayList<ExpandListGroup> SetStandardGroups(String ch , String drop, boolean btnClickflag) {
     	
@@ -219,6 +237,14 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	public void onNothingSelected(AdapterView<?> arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	/** Store chooser */
+	@Override
+	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		System.out.println("Chose a store");
+		return false;
 	}
 	
 	/*
