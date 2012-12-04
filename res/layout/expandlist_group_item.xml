@@ -2,13 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
 
-    <TextView 
+    <TextView
         android:id="@+id/tvGroup"
-        android:layout_width="fill_parent"
+        android:layout_width="0dip"
         android:layout_height="wrap_content"
-        android:layout_marginRight="15dp"
-        android:textSize="22sp"/>
-    
+        android:layout_weight="1"
+        android:layout_marginLeft="15dp"
+        android:textSize="22sp" />
+
+    <ImageView
+        android:id="@+id/ivGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_action_expand" />
+
 </LinearLayout>
