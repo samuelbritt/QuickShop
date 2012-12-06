@@ -29,7 +29,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final String TABLE_STORE = "store";
 	private static final String KEY_STORE_ID = "store_id";
 	private static final String STORE_NAME = "store_name";
-	private static final String STORE_LOC_COORDINATES = "location_coordinates";
+	private static final String STORE_LOC_LATITUDE = "location_latitude";
+	private static final String STORE_LOC_LONGITUDE = "location_longitude";
 	private static final String STORE_STARTCOORDX = "store_startCoordX";
 	private static final String STORE_STARTCOORDY = "store_startCoordY";
 
@@ -68,10 +69,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.execSQL(CREATE_ITEM_CAT_TABLE);
 
 		String CREATE_STORE_TABLE =
-		        "CREATE TABLE " + TABLE_STORE + "(" + KEY_STORE_ID
-		                + " INTEGER PRIMARY KEY," + STORE_NAME + " TEXT,"
+		        "CREATE TABLE " + TABLE_STORE + "("
+		                + KEY_STORE_ID + " INTEGER PRIMARY KEY,"
+		                + STORE_NAME + " TEXT,"
+		                + STORE_LOC_LATITUDE + " FLOAT,"
+		                + STORE_LOC_LONGITUDE + " FLOAT,"
 		                + STORE_STARTCOORDX + " INTEGER,"
-		                + STORE_STARTCOORDY + " INTEGER" + ");";
+		                + STORE_STARTCOORDY + " INTEGER"
+		                + ");";
 		db.execSQL(CREATE_STORE_TABLE);
 
 		String CREATE_CATEGORY_TABLE =
