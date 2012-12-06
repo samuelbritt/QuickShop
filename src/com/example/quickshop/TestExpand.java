@@ -84,10 +84,10 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	}
 
 	private void loadStoreChooser() {
-		List<StoreNew> storeData = db.getAllStores();
+		List<Store> storeData = db.getAllStores();
 		ArrayList<String> storeNames = new ArrayList<String>();
 
-		for (StoreNew s : storeData) {
+		for (Store s : storeData) {
 			String name = s.getName();
 			storeNames.add(name);
 		}
@@ -118,10 +118,10 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 
 		// DatabaseHandler dbspin = new DatabaseHandler(this);
 
-		List<CategoryNew> catData = db.getAllCategories();
+		List<Category> catData = db.getAllCategories();
 		ArrayList<String> catStringData = new ArrayList<String>();
 
-		for (CategoryNew c : catData) {
+		for (Category c : catData) {
 			String var = c.getCatName();
 			catStringData.add(var);
 		}
@@ -183,17 +183,17 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	                                                    boolean btnClickflag) {
 
 		ArrayList<ExpandListGroup> groupList = new ArrayList<ExpandListGroup>();
-		List<CategoryNew> categories = db.getAllCategories();
+		List<Category> categories = db.getAllCategories();
 
-		for (CategoryNew c : categories) {
+		for (Category c : categories) {
 			ExpandListGroup group = new ExpandListGroup();
 			String var = c.getCatName();
 			group.setName(var);
 
 			if (btnClickflag) {
 
-				List<ItemCatNew> items =
-				        (List<ItemCatNew>) db.getItemsFromCategoryName(var);
+				List<ItemCategory> items =
+				        (List<ItemCategory>) db.getItemsFromCategoryName(var);
 				ArrayList<ExpandListChild> childList =
 				        new ArrayList<ExpandListChild>();
 				if (items.isEmpty()) {
@@ -201,7 +201,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 				} else {
 					hashCategories.put(var, 1);
 				}
-				for (ItemCatNew itc : items) {
+				for (ItemCategory itc : items) {
 					ExpandListChild child = new ExpandListChild();
 					child.setName(itc.getItemName());
 					childList.add(child);
@@ -210,8 +210,8 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 				group.setItems(childList);
 			}
 
-			List<ItemCatNew> items =
-			        (List<ItemCatNew>) db.getItemsFromCategoryName(var);
+			List<ItemCategory> items =
+			        (List<ItemCategory>) db.getItemsFromCategoryName(var);
 			if (items.isEmpty()) {
 
 			} else {
@@ -230,7 +230,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 		editText.setText("");
 		addItemButtonClickflag = true;
 
-		db.addItemCat(new ItemCatNew(itemChild, dropDownCat));
+		db.addItemCat(new ItemCategory(itemChild, dropDownCat));
 
 		ExpListItems =
 		        SetStandardGroups(itemChild, dropDownCat,

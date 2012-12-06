@@ -198,7 +198,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	 * THE INSERT FUNCTIONS
 	 */
 
-	void addStore(StoreNew store) {
+	void addStore(Store store) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
 		ContentValues values = new ContentValues();
@@ -211,7 +211,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.close();
 	}
 
-	void addCategory(CategoryNew cat) {
+	void addCategory(Category cat) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
 		ContentValues values = new ContentValues();
@@ -237,7 +237,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.close();
 	}
 
-	void addItemCat(ItemCatNew itemCat) {
+	void addItemCat(ItemCategory itemCat) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		
 		ContentValues values = new ContentValues();
@@ -251,8 +251,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	 * THE SELECT FROM TABLE FUNCTIONS (READING ROWS OF THE TABLE)
 	 */
 
-	public List<ItemCatNew> getItemsFromCategoryName(String category) {
-		List<ItemCatNew> itemList = new ArrayList<ItemCatNew>();
+	public List<ItemCategory> getItemsFromCategoryName(String category) {
+		List<ItemCategory> itemList = new ArrayList<ItemCategory>();
 		SQLiteDatabase db = this.getReadableDatabase();
 		
 		Cursor cursor =
@@ -264,7 +264,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 		if (cursor.moveToFirst()) {
 			do {
-				ItemCatNew itemcat = new ItemCatNew();
+				ItemCategory itemcat = new ItemCategory();
 				itemcat.setItemName(cursor.getString(0));
 				itemcat.setCatName(cursor.getString(1));
 				itemList.add(itemcat);
@@ -279,8 +279,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.execSQL(deleteSQL);
 	}
 
-	public List<StoreNew> getAllStores() {
-		List<StoreNew> storeList = new ArrayList<StoreNew>();
+	public List<Store> getAllStores() {
+		List<Store> storeList = new ArrayList<Store>();
 
 		String selectQuery = "SELECT * FROM " + TABLE_STORE;
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -288,7 +288,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 		if (cursor.moveToFirst()) {
 			do {
-				StoreNew storeNew = new StoreNew();
+				Store storeNew = new Store();
 				storeNew.setID(cursor.getInt(0));
 				storeNew.setName(cursor.getString(1));
 				storeNew.setStartCoordX(cursor.getInt(2));
@@ -301,8 +301,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	}
 
 	// Need to get store name from action bar
-	public List<StoreNew> getStoreID(String storeName) {
-		List<StoreNew> storeList = new ArrayList<StoreNew>();
+	public List<Store> getStoreID(String storeName) {
+		List<Store> storeList = new ArrayList<Store>();
 
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cursor =
@@ -316,7 +316,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 		if (cursor.moveToFirst()) {
 			do {
-				StoreNew stNew = new StoreNew();
+				Store stNew = new Store();
 				stNew.setID(cursor.getInt(0));
 				stNew.setName(cursor.getString(1));
 				stNew.setStartCoordX(cursor.getInt(2));
@@ -329,8 +329,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return storeList;
 	}
 
-	public List<CategoryNew> getAllCategories() {
-		List<CategoryNew> categoryList = new ArrayList<CategoryNew>();
+	public List<Category> getAllCategories() {
+		List<Category> categoryList = new ArrayList<Category>();
 
 		String selectCat = "SELECT * FROM " + TABLE_CATEGORY;
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -338,7 +338,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 		if (cursor.moveToFirst()) {
 			do {
-				CategoryNew cat = new CategoryNew();
+				Category cat = new Category();
 				cat.setCatName(cursor.getString(0));
 				cat.setAnchPoint(cursor.getInt(1));
 				categoryList.add(cat);

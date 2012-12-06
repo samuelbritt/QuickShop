@@ -1,8 +1,6 @@
 package com.example.quickshop;
 
 public class ItemCategory {
-	
-	
 	String itemName;
 	String categoryName;
 	

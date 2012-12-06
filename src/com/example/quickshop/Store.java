@@ -1,37 +1,31 @@
 package com.example.quickshop;
 
 public class Store {
-	
-	//private variables
+
 	int storeID;
 	String storeName;
-	String locationCoordinates;
+	int storeStartCoordX;
+	int storeStartCoordY;
 	
-	//Empty Constructor
-	public Store() {
+	
+	public Store(){
 		
 	}
 	
-	//constructor
-	public Store(int storeID, String storeName, String locationCoordinates){
+	public Store(int storeID, String storeName, int storeStartCoordX, int storeStartCoordY){
 		this.storeID = storeID;
 		this.storeName = storeName;
-		this.locationCoordinates = locationCoordinates;
+		this.storeStartCoordX = storeStartCoordX;
+		this.storeStartCoordY = storeStartCoordY;
 	}
 	
-	//constructor
-	public Store(String storeName, String locationCoordinates) {
+	public Store(String storeName, int storeStartCoordX, int storeStartCoordY) {
 		this.storeName = storeName;
-		this.locationCoordinates = locationCoordinates;
+		this.storeStartCoordX = storeStartCoordX;
+		this.storeStartCoordY = storeStartCoordY;
 	}
 	
-	// constructor
 	
-	public Store(String storeName) {
-		this.storeName = storeName;
-	}
-	
-	//getting the store id
 	public int getID(){
 		return this.storeID;
 	}
@@ -40,7 +34,6 @@ public class Store {
 		this.storeID = storeID;
 	}
 	
-	// getting StoreName
 	public String getName(){
 		return this.storeName;
 	}
@@ -50,14 +43,21 @@ public class Store {
 		this.storeName = storeName;
 	}
 	
-	// getting storecoordinates
-	public String getCordinates(){
-		return this.locationCoordinates;
+	
+	public int getStoreStartCoordX(){
+		return this.storeStartCoordX;
 	}
 	
-	// setting storecoordinates
-	
-	public void setCoordinates(String locationCoordinates){
-		this.locationCoordinates = locationCoordinates;
+	public void setStartCoordX(int storeStartCoordX){
+		this.storeStartCoordX = storeStartCoordX;
 	}
+	
+	public int getStoreStartCoordY(){
+		return this.storeStartCoordY;
+	}
+	
+	public void setStoreStartCoordY(int storeStartCoordY){
+		this.storeStartCoordY = storeStartCoordY;
+	}
+		
 }
