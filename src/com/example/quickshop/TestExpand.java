@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.app.ActionBar.OnNavigationListener;
 import android.content.Intent;
 import android.database.SQLException;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 import android.support.v4.app.NavUtils;
 import com.example.quickshop.R;
 
@@ -47,9 +49,8 @@ public class TestExpand extends Activity implements OnItemSelectedListener, OnNa
         String noChild = "";
         String noDrop = "";
         
-        
-        
        db.deleteItems();
+        //db.deleteItemsCatInStore();
         try {
         	db.createDataBase();
         } catch (IOException ioe) {
@@ -62,8 +63,20 @@ public class TestExpand extends Activity implements OnItemSelectedListener, OnNa
         	throw sqle;
         }
         
+        // Inserting Cat in store
+      
+      /*  
+        Log.d("Reading: ","Reading..");
+        List<CatInStore> catList = db.getCatInStore();
+        
+        for(CatInStore cis: catList){
+        	String log = "Cat Name: " + cis.getCatName() + " Store Id: " + cis.getStoreID() + " StartX: " + cis.getStartCoordX() + " StartY: " + cis.getStartCoordY() + " EndX: " + cis.getEndCoordX() + " EndY: " + cis.getEndCoordY();
+        	Log.d("Name: ", log);
+        }
+        */
         // INSERT STATEMENTS go here for the first time . You need to remove them after inserting to avoid Key constraint. 
         
+        db.deleteItems();
         ExpandList = (ExpandableListView) findViewById(R.id.ExpList);
         ExpListItems = SetStandardGroups(noChild, noDrop, addItemButtonClickflag);
         ExpAdapter = new ExpandListAdapter(TestExpand.this, ExpListItems);
@@ -71,32 +84,37 @@ public class TestExpand extends Activity implements OnItemSelectedListener, OnNa
         
         Intent intent = getIntent();
         message = intent.getStringExtra(TestExpand.EXTRA_MESSAGE);
+        
         // Loading spinner data
         spinner = (Spinner) findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(this);
         loadSpinnerData();
-
+  
         loadStoreChooser();
+      
     }
     
     
     private void loadStoreChooser() {
-    	List<Store> storeData = db.getAllStores();
+    	
+    	List<StoreNew> storeData = db.getAllNewStores();
     	ArrayList<String> storeNames = new ArrayList<String>();
-    	for (Store s: storeData) {
+    	
+    	for (StoreNew s: storeData){
     		String name = s.getName();
-    		System.out.println(name);
+    		//System.out.println(name);
     		storeNames.add(name);
     	}
-    	
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+    	ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, storeNames);
-		dataAdapter
+    	
+    	dataAdapter
         .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		
-		ActionBar bar = getActionBar();
+    	
+    	ActionBar bar = getActionBar();
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		bar.setListNavigationCallbacks(dataAdapter, this);
+    	
     }
 
 	/** 
@@ -104,25 +122,21 @@ public class TestExpand extends Activity implements OnItemSelectedListener, OnNa
 	private void loadSpinnerData() {
 	
 		//DatabaseHandler dbspin = new DatabaseHandler(this);
-		List<Category> catData = db.getAllCategories();
 		
+		List<CategoryNew> catData = db.getAllCategoriesNew();
 		ArrayList<String> catStringData = new ArrayList<String>();
 		
-			for(Category c : catData){
-				
-				String var = c.getCatName();
-				catStringData.add(var);
-				}
-			
+		for(CategoryNew c : catData){
+			String var = c.getCatName();
+			catStringData.add(var);
+		}
 		
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, catStringData);
-	
-	   // drop down loyout style - listview with radiobuttons
+		
 		dataAdapter
         .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-		// attaching dataAdapter to Spinner
+		
 		spinner.setAdapter(dataAdapter);
 		
 	
@@ -149,9 +163,14 @@ public class TestExpand extends Activity implements OnItemSelectedListener, OnNa
     }
     
     private void sort_categories() {
-    	 
+    	
+    	
+    	
     	Enumeration<String> e = hashCategories.keys();
-         ArrayList<String> categoryListForSort = new ArrayList<String>();
+        if(hashCategories.isEmpty()){
+        	Toast.makeText(getApplicationContext(), "Please select items for sorting", Toast.LENGTH_SHORT).show();
+        }
+    	ArrayList<String> categoryListForSort = new ArrayList<String>();
         
          while(e.hasMoreElements()){
          	Object k = e.nextElement();
@@ -168,44 +187,41 @@ public class TestExpand extends Activity implements OnItemSelectedListener, OnNa
     public ArrayList<ExpandListGroup> SetStandardGroups(String ch , String drop, boolean btnClickflag) {
     	
     	ArrayList<ExpandListGroup> groupList = new ArrayList<ExpandListGroup>();
-    	  
-    	//DatabaseHandler db = new DatabaseHandler(this);
-    	List<Category> categories = db.getAllCategories();
+    	List<CategoryNew> categories = db.getAllCategoriesNew();
     	
-    	for(Category c: categories){
-    		
+    	for(CategoryNew c: categories){
     		ExpandListGroup group = new ExpandListGroup();
     		String var = c.getCatName();
     		group.setName(var);
     		
     		if(btnClickflag){
     			
-    				List<ItemCatNew> items = (List<ItemCatNew>) db.getItemsNewList(var);
-    	    		ArrayList<ExpandListChild> childList = new ArrayList<ExpandListChild>();
-    	        	if(items.isEmpty()){
-    	        		
-    	        	} else {
-    	        		hashCategories.put(var, 1);
-    	        	}
-    	    		for(ItemCatNew itc : items){
-    	        		ExpandListChild child = new ExpandListChild();
-    	        		child.setName(itc.getItemName());
-    	        		childList.add(child);
-    	           	}
-    	            	
-    	        	group.setItems(childList);
-    	   		}
+				List<ItemCatNew> items = (List<ItemCatNew>) db.getItemsNewList(var);
+	    		ArrayList<ExpandListChild> childList = new ArrayList<ExpandListChild>();
+	        	if(items.isEmpty()){
+	        		
+	        	} else {
+	        		hashCategories.put(var, 1);
+	        	}
+	    		for(ItemCatNew itc : items){
+	        		ExpandListChild child = new ExpandListChild();
+	        		child.setName(itc.getItemName());
+	        		childList.add(child);
+	           	}
+	            	
+	        	group.setItems(childList);
+	   		}
+		
+		List<ItemCatNew> items = (List<ItemCatNew>) db.getItemsNewList(var);
+		if(items.isEmpty()){
+			
+		} else {
+			groupList.add(group);
+		}
     		
-    		List<ItemCatNew> items = (List<ItemCatNew>) db.getItemsNewList(var);
-    		if(items.isEmpty()){
-    			
-    		} else {
-    			groupList.add(group);
-    		}
-        
-      	}
-   
+    	}
     	return groupList;
+    	
     }
     
     public void btnAddItem (View view){
@@ -244,6 +260,8 @@ public class TestExpand extends Activity implements OnItemSelectedListener, OnNa
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 		System.out.println("Chose a store");
+		ActionBar bar = getActionBar();
+		
 		return false;
 	}
 	
