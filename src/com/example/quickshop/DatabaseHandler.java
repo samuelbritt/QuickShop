@@ -437,24 +437,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 		
 	}
 	
-	// testing 
-	/*
-public ItemCatNew getItemsNew(String category){
-		
-		SQLiteDatabase db = this.getReadableDatabase();
-		
-		//Cursor cursor = db.query(TABLE_ITEMCATNEW, new String[] {KEY_ITEM_NEW , KEY_CATEGORY_NEW}, KEY_CATEGORY_NEW + "=" + category, new String[] {String.valueOf(KEY_ITEM_NEW)}, null, null, null, null);
-		//Cursor cursor = db.query(TABLE_ITEMCATNEW, new String[] {KEY_ITEM_NEW, KEY_CATEGORY_NEW}, null, new String[] {KEY_CATEGORY_NEW + "=?"}, null, null, null);
-		Cursor cursor = db.query(TABLE_ITEMCATNEW, new String[] { KEY_ITEM_NEW , KEY_CATEGORY_NEW }, KEY_CATEGORY_NEW + "=?", new String[] {String.valueOf(category) }, null, null, null, null);
-		if(cursor != null)
-			cursor.moveToFirst();
-		
-		ItemCatNew itemCatNew = new ItemCatNew(cursor.getString(0), cursor.getString(1));
-		
-		return itemCatNew;
-		
-	}
-	*/
+	
 public List<ItemCatNew> getItemsNewList(String category){
 	List<ItemCatNew> itemList = new ArrayList<ItemCatNew>();
 	SQLiteDatabase db = this.getReadableDatabase();
@@ -553,7 +536,6 @@ public List<ItemCatNew> getItemsNewList(String category){
 		
 		return storeList;
 	}
-	// Need to write a method for retrieving category list .... 
 	
 	// getting all Categories 
 	
@@ -665,25 +647,5 @@ public List<ItemCatNew> getItemsNewList(String category){
 		int nodesPerAisle = cursor.getInt(0);
 		return nodesPerAisle;
 	}
-	/*
-	public List<ItemCatNew> testItem(String category) { //String category
-		List<ItemCatNew> itemCatNewList = new ArrayList<ItemCatNew>();
-		
-		String selectItemCat = "SELECT * FROM " + TABLE_ITEMCATNEW;//  + " WHERE " + KEY_CATEGORY_NEW + " = " + category;
-		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor cursor = db.query(TABLE_ITEMCATNEW, new String[] {KEY_ITEM_NEW, KEY_CATEGORY_NEW}, null, new String[] {KEY_CATEGORY_NEW + "=?"}, null, null, null);
-		
-		if(cursor.moveToFirst()){
-			
-			do{
-				ItemCatNew itc = new ItemCatNew();
-				itc.setItemName(cursor.getString(0));
-				itc.setCatName(cursor.getString(1));
-				
-				itemCatNewList.add(itc);
-			} while (cursor.moveToNext());
-		}
-	return itemCatNewList;
-	}
-	*/
+	
 }

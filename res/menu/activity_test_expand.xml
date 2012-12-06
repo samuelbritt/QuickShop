@@ -3,11 +3,7 @@
     <item
         android:id="@+id/menu_settings"
         android:title="@string/menu_settings"/>
-<!--     <item -->
-<!--         android:id="@+id/chooseStore" -->
-<!--         android:actionLayout="@layout/choose_store" -->
-<!--         android:showAsAction="ifRoom" -->
-<!--         android:title="@string/choose_store"/> -->
+    
     <item
         android:id="@+id/refresh_sort"
         android:icon="@drawable/ic_action_sort"

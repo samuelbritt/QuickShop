@@ -8,10 +8,8 @@ import java.util.List;
 import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.ActionBar.OnNavigationListener;
 import android.content.Intent;
 import android.database.SQLException;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +24,7 @@ import android.widget.Toast;
 import android.support.v4.app.NavUtils;
 import com.example.quickshop.R;
 
-public class TestExpand extends Activity implements OnItemSelectedListener, OnNavigationListener {
+public class TestExpand extends Activity implements OnItemSelectedListener {
 	List<String> Cat = new ArrayList<String>();
 	public final static String EXTRA_MESSAGE = "com.example.quickshop.MESSAGE";
 	String message;
@@ -63,17 +61,6 @@ public class TestExpand extends Activity implements OnItemSelectedListener, OnNa
         	throw sqle;
         }
         
-        // Inserting Cat in store
-      
-      /*  
-        Log.d("Reading: ","Reading..");
-        List<CatInStore> catList = db.getCatInStore();
-        
-        for(CatInStore cis: catList){
-        	String log = "Cat Name: " + cis.getCatName() + " Store Id: " + cis.getStoreID() + " StartX: " + cis.getStartCoordX() + " StartY: " + cis.getStartCoordY() + " EndX: " + cis.getEndCoordX() + " EndY: " + cis.getEndCoordY();
-        	Log.d("Name: ", log);
-        }
-        */
         // INSERT STATEMENTS go here for the first time . You need to remove them after inserting to avoid Key constraint. 
         
         db.deleteItems();
@@ -105,16 +92,25 @@ public class TestExpand extends Activity implements OnItemSelectedListener, OnNa
     		//System.out.println(name);
     		storeNames.add(name);
     	}
-    	ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, storeNames);
     	
-    	dataAdapter
-        .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    	
-    	ActionBar bar = getActionBar();
+		ActionBar bar = getActionBar();
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-		bar.setListNavigationCallbacks(dataAdapter, this);
-    	
+        bar.setListNavigationCallbacks(
+                // Specify a SpinnerAdapter to populate the dropdown list.
+                new ArrayAdapter<String>(
+                        bar.getThemedContext(),
+                        android.R.layout.simple_list_item_1,
+                        storeNames),
+
+                // Provide a listener to be called when an item is selected.
+                new ActionBar.OnNavigationListener() {
+                    public boolean onNavigationItemSelected(
+                            int position, long id) {
+                        // Take action here, e.g. switching to the
+                        // corresponding fragment.
+                        return chooseStore(position, id);
+                    }
+                });
     }
 
 	/** 
@@ -257,19 +253,14 @@ public class TestExpand extends Activity implements OnItemSelectedListener, OnNa
 
 
 	/** Store chooser */
-	@Override
-	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+	public boolean chooseStore(int itemPosition, long itemId) {
 		System.out.println("Chose a store");
 		ActionBar bar = getActionBar();
 		
 		return false;
 	}
 	
-	/*
-	public void sendForSort(View view) {
-		Toast.makeText(getApplicationContext(), "method reached", Toast.LENGTH_LONG).show();
-	}
-	*/
+	
 }
 
 
