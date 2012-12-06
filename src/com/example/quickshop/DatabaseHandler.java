@@ -15,6 +15,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
+import android.util.Log;
 
 @SuppressLint("NewApi")
 public class DatabaseHandler extends SQLiteOpenHelper {
@@ -22,89 +24,40 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	// All static variables
 	// Database version
 	private static final int DATABASE_VERSION = 1;
-	private static String DB_PATH =
-	        "/data/data/com.example.quickshop/databases/";
-	static final String DATABASE_NAME = "QuickShopDB_NEW";
+	private String DB_PATH = "";
+	static final String DATABASE_NAME = "QuickShopDB";
 
-	private static final String TABLE_STORE = "store";
-	private static final String KEY_STORE_ID = "store_id";
-	private static final String STORE_NAME = "store_name";
-	private static final String STORE_LOC_LATITUDE = "location_latitude";
-	private static final String STORE_LOC_LONGITUDE = "location_longitude";
-	private static final String STORE_STARTCOORDX = "store_startCoordX";
-	private static final String STORE_STARTCOORDY = "store_startCoordY";
-
-	private static final String TABLE_CATEGORY = "category";
-	private static final String KEY_CATEGORY_NAME = "category_name";
-	private static final String CATEGORY_ANCHOR_POINT = "category_anchorPoint";
-
-	private static final String TABLE_CATEGORYINSTORE = "categoryInStore";
-	private static final String CATINSTORE_CATNAME = "catInStore_categoryName";
-	private static final String CATINSTORE_STORE_ID = "catInStore_storeID";
-	private static final String CATINSTORE_STARTX = "catInStore_startX";
-	private static final String CATINSTORE_STARTY = "catInStore_startY";
-	private static final String CATINSTORE_ENDX = "catInStore_endX";
-	private static final String CATINSTORE_ENDY = "catInStore_endY";
-
-	private static final String TABLE_ITEMCAT = "item_category";
-	private static final String KEY_ITEM = "item_name";
-	private static final String KEY_CATEGORY = "category_name";
 
 	private SQLiteDatabase myDataBase;
 	private final Context myContext;
 
 	public DatabaseHandler(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		this.DB_PATH = Environment.getDataDirectory() + "/data/" + context.getPackageName() + "/databases/";
 		this.myContext = context;
 	}
 
 	// Creating tables
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-
-		String CREATE_ITEM_CAT_TABLE =
-		        "CREATE TABLE " + TABLE_ITEMCAT + "(" + KEY_ITEM
-		                + " STRING PRIMARY KEY," + KEY_CATEGORY + " TEXT"
-		                + ");";
-		db.execSQL(CREATE_ITEM_CAT_TABLE);
-
-		String CREATE_STORE_TABLE =
-		        "CREATE TABLE " + TABLE_STORE + "("
-		                + KEY_STORE_ID + " INTEGER PRIMARY KEY,"
-		                + STORE_NAME + " TEXT,"
-		                + STORE_LOC_LATITUDE + " FLOAT,"
-		                + STORE_LOC_LONGITUDE + " FLOAT,"
-		                + STORE_STARTCOORDX + " INTEGER,"
-		                + STORE_STARTCOORDY + " INTEGER"
-		                + ");";
-		db.execSQL(CREATE_STORE_TABLE);
-
-		String CREATE_CATEGORY_TABLE =
-		        "CREATE TABLE " + TABLE_CATEGORY + "("
-		                + KEY_CATEGORY_NAME + " STRING PRIMARY KEY,"
-		                + CATEGORY_ANCHOR_POINT + " INTEGER" + ");)";
-		db.execSQL(CREATE_CATEGORY_TABLE);
-
-		String CREATE_CATINSTORE_TABLE =
-		        "CREATE TABLE " + TABLE_CATEGORYINSTORE + "("
-		                + CATINSTORE_CATNAME + " TEXT,"
-		                + CATINSTORE_STORE_ID + " INTEGER,"
-		                + CATINSTORE_STARTX + " INTEGER," + CATINSTORE_STARTY
-		                + " INTEGER," + CATINSTORE_ENDX + " INTEGER,"
-		                + CATINSTORE_ENDY + " INTEGER" + ");";
-		db.execSQL(CREATE_CATINSTORE_TABLE);
+		StoreTable.onCreate(db);
+		CategoryTable.onCreate(db);
+		CatInStoreTable.onCreate(db);
+		ItemCategoryTable.onCreate(db);
 	}
+
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-		db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEMCAT);
-		db.execSQL("DROP TABLE IF EXISTS " + TABLE_STORE);
-		db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORY);
-		db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORYINSTORE);
-
-		// create tables again
-		onCreate(db);
+		Log.w(DatabaseHandler.class.getName(), "Upgrading database from "
+		                                       + oldVersion + " to "
+		                                       + newVersion);
+		StoreTable.onUpgrade(db, oldVersion, newVersion);
+		CategoryTable.onUpgrade(db, oldVersion, newVersion);
+		ItemCategoryTable.onUpgrade(db, oldVersion, newVersion);
+		CatInStoreTable.onUpgrade(db, oldVersion, newVersion);
+		
 	}
 
 	public void createDataBase() throws IOException {
@@ -296,7 +249,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				Store storeNew = new Store();
 				storeNew.setID(cursor.getInt(0));
 				storeNew.setName(cursor.getString(1));
-				storeNew.setStartCoordX(cursor.getInt(2));
+				storeNew.setStoreStartCoordX(cursor.getInt(2));
 				storeNew.setStoreStartCoordY(cursor.getInt(3));
 
 				storeList.add(storeNew);
@@ -324,7 +277,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				Store stNew = new Store();
 				stNew.setID(cursor.getInt(0));
 				stNew.setName(cursor.getString(1));
-				stNew.setStartCoordX(cursor.getInt(2));
+				stNew.setStoreStartCoordX(cursor.getInt(2));
 				stNew.setStoreStartCoordY(cursor.getInt(3));
 
 				storeList.add(stNew);

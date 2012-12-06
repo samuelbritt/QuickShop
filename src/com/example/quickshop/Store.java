@@ -48,7 +48,7 @@ public class Store {
 		return this.storeStartCoordX;
 	}
 	
-	public void setStartCoordX(int storeStartCoordX){
+	public void setStoreStartCoordX(int storeStartCoordX){
 		this.storeStartCoordX = storeStartCoordX;
 	}
 	
