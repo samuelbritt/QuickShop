@@ -1,34 +1,41 @@
 package com.example.quickshop;
 
 public class Category {
-	
+	long _id;
 	String categoryName;
-	int anchorPoint;
+	boolean anchorPoint;
 	
 	
 	public Category(){
 		
 	}
 	
-	public Category(String categoryName, int anchorPoint){
+	public Category(String categoryName, boolean anchorPoint){
 		this.categoryName = categoryName;
 		this.anchorPoint = anchorPoint;
 	}
 	
+	public long getID() {
+		return _id;
+	}
 	
-	public String getCatName(){
+	public void setID(long id) {
+		this._id = id;
+	}
+	
+	public String getName(){
 		return this.categoryName;
 	}
 	
-	public void setCatName(String categoryName){
+	public void setName(String categoryName){
 		this.categoryName = categoryName;
 	}
 	
-	public int getAnchPoint(){
+	public boolean getAnchPoint(){
 		return this.anchorPoint;
 	}
 	
-	public void setAnchPoint(int anchorPoint){
+	public void setAnchPoint(boolean anchorPoint){
 		this.anchorPoint = anchorPoint;
 	}
 }

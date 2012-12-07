@@ -1,7 +1,7 @@
 package com.example.quickshop;
 
 public class CatInStore {
-	
+	long _id;
 	String categoryName;
 	int storeID;
 	int startCoordX;
@@ -13,13 +13,22 @@ public class CatInStore {
 	
 	}
 	
-	public CatInStore(String categoryName, int storeID, int startCoordX, int startCoordY, int endCoordX, int endCoordY){
+	public CatInStore(long id, String categoryName, int storeID, int startCoordX, int startCoordY, int endCoordX, int endCoordY){
+		this._id = id;
 		this.categoryName = categoryName;
 		this.storeID = storeID;
 		this.startCoordX = startCoordX;
 		this.startCoordY = startCoordY;
 		this.endCoordX = endCoordX;
 		this.endCoordY = endCoordY;
+	}
+	
+	public long getID() {
+		return this._id;
+	}
+	
+	public void setID(long id) {
+		this._id = id;
 	}
 	
 	public String getCatName(){

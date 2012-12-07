@@ -1,19 +1,19 @@
 package com.example.quickshop;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
-import android.os.Bundle;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
-import android.database.SQLException;
+import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -21,13 +21,12 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.Spinner;
 import android.widget.Toast;
-import android.support.v4.app.NavUtils;
-import com.example.quickshop.R;
 
 public class TestExpand extends Activity implements OnItemSelectedListener {
 	List<String> Cat = new ArrayList<String>();
 	public final static String EXTRA_MESSAGE = "com.example.quickshop.MESSAGE";
 	String message;
+	private final String TAG = "QuickShop";
 
 	private ExpandListAdapter ExpAdapter;
 	private ArrayList<ExpandListGroup> ExpListItems;
@@ -36,7 +35,9 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	private String itemChild;
 	private String dropDownCat;
 	private boolean addItemButtonClickflag = false;
-	DatabaseHandler db = new DatabaseHandler(this);
+	private StoreDAO storeDAO;
+	private CategoryDAO categoryDAO;
+	private ItemCategoryDAO itemCatDAO;
 
 	Hashtable<String, Integer> hashCategories =
 	        new Hashtable<String, Integer>();
@@ -47,25 +48,16 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 		setContentView(R.layout.activity_test_expand);
 		String noChild = "";
 		String noDrop = "";
+		
+		storeDAO = new StoreDAO(this);
+		storeDAO.open();
+		
+		categoryDAO = new CategoryDAO(this);
+		categoryDAO.open();
+		
+		itemCatDAO = new ItemCategoryDAO(this);
+		itemCatDAO.open();
 
-		db.deleteItems();
-		// db.deleteItemsCatInStore();
-		try {
-			db.createDataBase();
-		} catch (IOException ioe) {
-			throw new Error("Unable to create DB");
-		}
-
-		try {
-			db.openDataBase();
-		} catch (SQLException sqle) {
-			throw sqle;
-		}
-
-		// INSERT STATEMENTS go here for the first time . You need to remove
-		// them after inserting to avoid Key constraint.
-
-		db.deleteItems();
 		ExpandList = (ExpandableListView) findViewById(R.id.ExpList);
 		ExpListItems =
 		        SetStandardGroups(noChild, noDrop, addItemButtonClickflag);
@@ -78,13 +70,13 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 		// Loading spinner data
 		spinner = (Spinner) findViewById(R.id.spinner);
 		spinner.setOnItemSelectedListener(this);
+		
 		loadSpinnerData();
-
 		loadStoreChooser();
 	}
 
 	private void loadStoreChooser() {
-		List<Store> storeData = db.getAllStores();
+		List<Store> storeData = storeDAO.findAll();
 		ArrayList<String> storeNames = new ArrayList<String>();
 
 		for (Store s : storeData) {
@@ -116,26 +108,21 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	 */
 	private void loadSpinnerData() {
 
-		// DatabaseHandler dbspin = new DatabaseHandler(this);
-
-		List<Category> catData = db.getAllCategories();
+		List<Category> catData = categoryDAO.findAll();
 		ArrayList<String> catStringData = new ArrayList<String>();
 
 		for (Category c : catData) {
-			String var = c.getCatName();
+			String var = c.getName();
 			catStringData.add(var);
 		}
-
+		
 		ArrayAdapter<String> dataAdapter =
 		        new ArrayAdapter<String>(this,
 		                                 android.R.layout.simple_spinner_item,
 		                                 catStringData);
-
 		dataAdapter
 		           .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
 		spinner.setAdapter(dataAdapter);
-
 	}
 
 	@Override
@@ -183,24 +170,22 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	                                                    boolean btnClickflag) {
 
 		ArrayList<ExpandListGroup> groupList = new ArrayList<ExpandListGroup>();
-		List<Category> categories = db.getAllCategories();
+		List<Category> categories = categoryDAO.findAll();
 
 		for (Category c : categories) {
 			ExpandListGroup group = new ExpandListGroup();
-			String var = c.getCatName();
-			group.setName(var);
+			String catName = c.getName();
+			group.setName(catName);
 
+			List<ItemCategory> items = itemCatDAO.findAllByCatName(catName);
+			
 			if (btnClickflag) {
-
-				List<ItemCategory> items =
-				        (List<ItemCategory>) db.getItemsFromCategoryName(var);
-				ArrayList<ExpandListChild> childList =
-				        new ArrayList<ExpandListChild>();
-				if (items.isEmpty()) {
-
-				} else {
-					hashCategories.put(var, 1);
+				ArrayList<ExpandListChild> childList = new ArrayList<ExpandListChild>();
+				
+				if (!items.isEmpty()) {
+					hashCategories.put(catName, 1);
 				}
+				
 				for (ItemCategory itc : items) {
 					ExpandListChild child = new ExpandListChild();
 					child.setName(itc.getItemName());
@@ -210,17 +195,12 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 				group.setItems(childList);
 			}
 
-			List<ItemCategory> items =
-			        (List<ItemCategory>) db.getItemsFromCategoryName(var);
-			if (items.isEmpty()) {
-
-			} else {
+			if (!items.isEmpty()) {
 				groupList.add(group);
 			}
-
 		}
-		return groupList;
 
+		return groupList;
 	}
 
 	public void btnAddItem(View view) {
@@ -230,7 +210,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 		editText.setText("");
 		addItemButtonClickflag = true;
 
-		db.addItemCat(new ItemCategory(itemChild, dropDownCat));
+		itemCatDAO.create(new ItemCategory(itemChild, dropDownCat));
 
 		ExpListItems =
 		        SetStandardGroups(itemChild, dropDownCat,
@@ -242,9 +222,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 	                           long id) {
-
 		dropDownCat = parent.getItemAtPosition(position).toString();
-
 	}
 
 	@Override
@@ -253,7 +231,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 
 	/** Store chooser */
 	public boolean chooseStore(int itemPosition, long itemId) {
-		System.out.println("Chose a store");
+		Log.i(TAG, "User chose a store");
 		return false;
 	}
 }

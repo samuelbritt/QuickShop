@@ -2,18 +2,19 @@ package com.example.quickshop;
 
 public class Store {
 
-	int storeID;
+	long _id;
 	String storeName;
 	int storeStartCoordX;
 	int storeStartCoordY;
-	
+	int aisleCount;
+	int nodesPerAisle;
 	
 	public Store(){
 		
 	}
 	
 	public Store(int storeID, String storeName, int storeStartCoordX, int storeStartCoordY){
-		this.storeID = storeID;
+		this._id = storeID;
 		this.storeName = storeName;
 		this.storeStartCoordX = storeStartCoordX;
 		this.storeStartCoordY = storeStartCoordY;
@@ -26,12 +27,12 @@ public class Store {
 	}
 	
 	
-	public int getID(){
-		return this.storeID;
+	public long getID(){
+		return this._id;
 	}
 	
-	public void setID(int storeID){
-		this.storeID = storeID;
+	public void setID(long storeID){
+		this._id = storeID;
 	}
 	
 	public String getName(){
@@ -42,7 +43,6 @@ public class Store {
 	public void setName(String storeName){
 		this.storeName = storeName;
 	}
-	
 	
 	public int getStoreStartCoordX(){
 		return this.storeStartCoordX;
@@ -59,5 +59,20 @@ public class Store {
 	public void setStoreStartCoordY(int storeStartCoordY){
 		this.storeStartCoordY = storeStartCoordY;
 	}
-		
+
+	public int getAisleCount() {
+		return aisleCount;
+	}
+
+	public void setAisleCount(int aisleCount) {
+		this.aisleCount = aisleCount;
+	}
+
+	public int getNodesPerAisle() {
+		return nodesPerAisle;
+	}
+
+	public void setNodesPerAisle(int nodesPerAisle) {
+		this.nodesPerAisle = nodesPerAisle;
+	}
 }

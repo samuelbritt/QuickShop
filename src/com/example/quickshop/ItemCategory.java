@@ -1,6 +1,7 @@
 package com.example.quickshop;
 
 public class ItemCategory {
+	long _id;
 	String itemName;
 	String categoryName;
 	
@@ -14,6 +15,13 @@ public class ItemCategory {
 		this.categoryName = categoryName;
 	}
 	
+	public long getID() {
+		return this._id;
+	}
+	
+	public void setID(long id) {
+		this._id = id;
+	}
 	
 	public String getItemName(){
 		return this.itemName;

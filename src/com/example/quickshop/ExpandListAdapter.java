@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import com.example.quickshop.R;
 import android.content.Context;
-import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

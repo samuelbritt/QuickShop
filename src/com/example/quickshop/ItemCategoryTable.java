@@ -3,13 +3,16 @@ package com.example.quickshop;
 import android.database.sqlite.SQLiteDatabase;
 
 public class ItemCategoryTable {
-	private static final String TABLE_NAME = "item_category";
-	private static final String KEY_ITEM = "item_name";
-	private static final String KEY_CATEGORY = "category_name";
+	public static final String TABLE_NAME = "item_category";
+	public static final String _ID = "_id";
+	public static final String ITEM = "item_name";
+	public static final String CATEGORY = "category_name";
 
 	private static final String CREATE =
-	        "CREATE TABLE " + TABLE_NAME + "(" + KEY_ITEM
-	                + " STRING PRIMARY KEY," + KEY_CATEGORY + " TEXT"
+	        "CREATE TABLE " + TABLE_NAME + "("
+	        		+ _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+	        		+ ITEM + " STRING,"
+	        		+ CATEGORY + " STRING"
 	                + ");";
 
 	public static void onCreate(SQLiteDatabase db) {
