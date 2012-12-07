@@ -38,6 +38,9 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	private StoreDAO storeDAO;
 	private CategoryDAO categoryDAO;
 	private ItemCategoryDAO itemCatDAO;
+	
+	private List<Store> availableStores;
+	private Store chosenStore;
 
 	Hashtable<String, Integer> hashCategories =
 	        new Hashtable<String, Integer>();
@@ -76,10 +79,10 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	}
 
 	private void loadStoreChooser() {
-		List<Store> storeData = storeDAO.findAll();
+		availableStores = storeDAO.findAll();
 		ArrayList<String> storeNames = new ArrayList<String>();
 
-		for (Store s : storeData) {
+		for (Store s : availableStores) {
 			String name = s.getName();
 			storeNames.add(name);
 		}
@@ -231,7 +234,8 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 
 	/** Store chooser */
 	public boolean chooseStore(int itemPosition, long itemId) {
-		Log.i(TAG, "User chose a store");
-		return false;
+		chosenStore = availableStores.get(itemPosition);
+		Log.i(TAG, "User chose a store " + chosenStore.getName());
+		return true;
 	}
 }
