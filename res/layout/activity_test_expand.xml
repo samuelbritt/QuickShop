@@ -41,7 +41,8 @@
                 android:layout_gravity="center"
                 android:clickable="true"
                 android:onClick="btnAddItem"
-                android:src="@drawable/add_item_selector" />
+                android:src="@drawable/add_item_selector"
+                android:contentDescription="@string/addItem"/>
         </LinearLayout>
 
         <Spinner

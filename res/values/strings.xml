@@ -11,6 +11,7 @@
     <string name="title_activity_test_expand">TestExpand</string>
 	<string name="refresh_sort">Refresh</string>
 	<string name="choose_store">Choose Store</string>
+	<string name="addItem">Add Item</string>
 	
     
 </resources>
