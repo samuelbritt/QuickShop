@@ -6,11 +6,16 @@ import java.util.List;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 public class CatInStoreDAO extends BaseDAO<CatInStore, Long> {
 
 	public CatInStoreDAO(Context context) {
 		super(context);
+	}
+
+	public CatInStoreDAO(DatabaseHandler databaseHandler, SQLiteDatabase db) {
+		super(databaseHandler, db);
 	}
 
 	@Override

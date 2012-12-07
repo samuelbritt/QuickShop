@@ -3,7 +3,7 @@ package com.example.quickshop;
 public class CatInStore {
 	long _id;
 	String categoryName;
-	int storeID;
+	long storeID;
 	int startCoordX;
 	int startCoordY;
 	int endCoordX;
@@ -13,8 +13,7 @@ public class CatInStore {
 	
 	}
 	
-	public CatInStore(long id, String categoryName, int storeID, int startCoordX, int startCoordY, int endCoordX, int endCoordY){
-		this._id = id;
+	public CatInStore(String categoryName, long storeID, int startCoordX, int startCoordY, int endCoordX, int endCoordY){
 		this.categoryName = categoryName;
 		this.storeID = storeID;
 		this.startCoordX = startCoordX;
@@ -39,11 +38,11 @@ public class CatInStore {
 		this.categoryName = categoryName;
 	}
 	
-	public int getStoreID(){
+	public long getStoreID(){
 		return this.storeID;
 	}
 	
-	public void setStoreID(int storeID){
+	public void setStoreID(long storeID){
 		this.storeID = storeID;
 	}
 
