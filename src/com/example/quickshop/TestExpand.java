@@ -38,32 +38,29 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	private StoreDAO storeDAO;
 	private CategoryDAO categoryDAO;
 	private ItemCategoryDAO itemCatDAO;
-	
+
 	private List<Store> availableStores;
 	private Store chosenStore;
 
-	Hashtable<String, Integer> hashCategories =
-	        new Hashtable<String, Integer>();
+	Hashtable<String, Integer> hashCategories = new Hashtable<String, Integer>();
+	ArrayList<String> sortedCatList = new ArrayList<String>();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_test_expand);
-		String noChild = "";
-		String noDrop = "";
-		
+
 		storeDAO = new StoreDAO(this);
 		storeDAO.open();
-		
+
 		categoryDAO = new CategoryDAO(this);
 		categoryDAO.open();
-		
+
 		itemCatDAO = new ItemCategoryDAO(this);
 		itemCatDAO.open();
 
 		ExpandList = (ExpandableListView) findViewById(R.id.ExpList);
-		ExpListItems =
-		        SetStandardGroups(noChild, noDrop, addItemButtonClickflag);
+		ExpListItems = SetStandardGroups();
 		ExpAdapter = new ExpandListAdapter(TestExpand.this, ExpListItems);
 		ExpandList.setAdapter(ExpAdapter);
 
@@ -73,7 +70,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 		// Loading spinner data
 		spinner = (Spinner) findViewById(R.id.spinner);
 		spinner.setOnItemSelectedListener(this);
-		
+
 		loadSpinnerData();
 		loadStoreChooser();
 	}
@@ -90,20 +87,19 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 		ActionBar bar = getActionBar();
 		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		bar.setListNavigationCallbacks(
-		    // Specify a SpinnerAdapter to populate the dropdown list.
-           new ArrayAdapter<String>(bar.getThemedContext(),
-                                    android.R.layout.simple_list_item_1,
-                                    storeNames),
+		// Specify a SpinnerAdapter to populate the dropdown list.
+				new ArrayAdapter<String>(bar.getThemedContext(),
+						android.R.layout.simple_list_item_1, storeNames),
 
-           // Provide a listener to be called when an item is selected.
-           new ActionBar.OnNavigationListener() {
-               public boolean onNavigationItemSelected(int position,
-                                                       long id) {
-                   // Take action here, e.g. switching to the corresponding 
-            	   // fragment.
-                   return chooseStore(position, id);
-               }
-           });
+				// Provide a listener to be called when an item is selected.
+				new ActionBar.OnNavigationListener() {
+					public boolean onNavigationItemSelected(int position,
+							long id) {
+						// Take action here, e.g. switching to the corresponding
+						// fragment.
+						return chooseStore(position, id);
+					}
+				});
 	}
 
 	/**
@@ -118,13 +114,11 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 			String var = c.getName();
 			catStringData.add(var);
 		}
-		
-		ArrayAdapter<String> dataAdapter =
-		        new ArrayAdapter<String>(this,
-		                                 android.R.layout.simple_spinner_item,
-		                                 catStringData);
+
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_spinner_item, catStringData);
 		dataAdapter
-		           .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(dataAdapter);
 	}
 
@@ -137,66 +131,45 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case android.R.id.home:
-				NavUtils.navigateUpFromSameTask(this);
-				return true;
-			case R.id.refresh_sort:
-				sort_categories();
-				return true;
+		case android.R.id.home:
+			NavUtils.navigateUpFromSameTask(this);
+			return true;
+		case R.id.refresh_sort:
+			sort_categories();
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
 	private void sort_categories() {
+		CatInStoreDAO catInStoreDAO = new CatInStoreDAO(this);
+		catInStoreDAO.open();
+		GraphStoreAdapter adapter = new GraphStoreAdapter(chosenStore,
+				categoryDAO, catInStoreDAO, sortedCatList);
+		adapter.sortCategories();
 
-		Enumeration<String> e = hashCategories.keys();
-		if (hashCategories.isEmpty()) {
-			Toast.makeText(getApplicationContext(),
-			               "Please select items for sorting",
-			               Toast.LENGTH_SHORT).show();
-		}
-		ArrayList<String> categoryListForSort = new ArrayList<String>();
-
-		while (e.hasMoreElements()) {
-			Object k = e.nextElement();
-			categoryListForSort.add(k.toString());
-
-		}
-
-		// Need to call the optimal path method - to ask Sam what does he mean
-		// by aisle count
-
+		catInStoreDAO.close();
+		SetStandardGroups();
 		return;
 	}
 
-	public ArrayList<ExpandListGroup> SetStandardGroups(String ch, String drop,
-	                                                    boolean btnClickflag) {
+	public ArrayList<ExpandListGroup> SetStandardGroups() {
 
 		ArrayList<ExpandListGroup> groupList = new ArrayList<ExpandListGroup>();
-		List<Category> categories = categoryDAO.findAll();
 
-		for (Category c : categories) {
+		for (String catName : sortedCatList) {
 			ExpandListGroup group = new ExpandListGroup();
-			String catName = c.getName();
 			group.setName(catName);
 
 			List<ItemCategory> items = itemCatDAO.findAllByCatName(catName);
-			
-			if (btnClickflag) {
-				ArrayList<ExpandListChild> childList = new ArrayList<ExpandListChild>();
-				
-				if (!items.isEmpty()) {
-					hashCategories.put(catName, 1);
-				}
-				
-				for (ItemCategory itc : items) {
-					ExpandListChild child = new ExpandListChild();
-					child.setName(itc.getItemName());
-					childList.add(child);
-				}
-
-				group.setItems(childList);
+			ArrayList<ExpandListChild> childList = new ArrayList<ExpandListChild>();
+			for (ItemCategory itc : items) {
+				ExpandListChild child = new ExpandListChild();
+				child.setName(itc.getItemName());
+				childList.add(child);
 			}
+
+			group.setItems(childList);
 
 			if (!items.isEmpty()) {
 				groupList.add(group);
@@ -214,17 +187,19 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 		addItemButtonClickflag = true;
 
 		itemCatDAO.create(new ItemCategory(itemChild, dropDownCat));
-
-		ExpListItems =
-		        SetStandardGroups(itemChild, dropDownCat,
-		                          addItemButtonClickflag);
+		
+		if (!sortedCatList.contains(dropDownCat)) {
+			sortedCatList.add(dropDownCat);
+		}
+		
+		ExpListItems = SetStandardGroups();
 		ExpAdapter = new ExpandListAdapter(TestExpand.this, ExpListItems);
 		ExpandList.setAdapter(ExpAdapter);
 	}
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
-	                           long id) {
+			long id) {
 		dropDownCat = parent.getItemAtPosition(position).toString();
 	}
 

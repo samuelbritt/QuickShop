@@ -11,13 +11,13 @@ import java.util.List;
  * @author sam
  * 
  */
-public class Store {
+public class GraphStore {
 	PrimalGraph P;
 	DualGraph D;
 	PathFinderAllPairsShortest<DualNode> APSP_Finder;
 	ArrayList<Category> categories;
 
-	public Store(int aisleCount, int nodesPerAisle, Coordinates startCoords) {
+	public GraphStore(int aisleCount, int nodesPerAisle, Coordinates startCoords) {
 		P = new PrimalGraph(aisleCount, nodesPerAisle, startCoords);
 		D = new DualGraph(P);
 		categories = new ArrayList<Category>();
@@ -31,7 +31,7 @@ public class Store {
 		return D;
 	}
 
-	public Category addCategory(String categoryName, Segment[] segments) {
+	public Category addCategory(String categoryName, List<Segment> segments) {
 		Category category = new Category(categoryName);
 		addNodesFromAllSegments(category, segments);
 		return category;
@@ -46,7 +46,7 @@ public class Store {
 		return null;
 	}
 
-	private void addNodesFromAllSegments(Category category, Segment[] segments) {
+	private void addNodesFromAllSegments(Category category, List<Segment> segments) {
 		for (Segment segment : segments) {
 			addNodeFromSegment(category, segment);
 		}

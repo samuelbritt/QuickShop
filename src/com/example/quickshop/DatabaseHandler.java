@@ -7,7 +7,7 @@ import android.util.Log;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 3;
 	private static final String DATABASE_NAME = "QuickShopDB";
 	private final String TAG = "QuickShop.DatabaseHandler";
 

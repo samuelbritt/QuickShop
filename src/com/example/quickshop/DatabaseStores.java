@@ -24,5 +24,6 @@ class PublixAtlStation {
 	    catInStoreDAO.create(new CatInStore(DatabaseCategories.coffeeTea,storeID,3,0,3,1));
 	    catInStoreDAO.create(new CatInStore(DatabaseCategories.cannedVegetables,storeID,3,1,3,2));
 	    catInStoreDAO.create(new CatInStore(DatabaseCategories.condiments,storeID,3,2,3,3));
+	    catInStoreDAO.create(new CatInStore(DatabaseCategories.breads,storeID,0,0,1,0));
 	}
 }
