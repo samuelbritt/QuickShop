@@ -41,10 +41,10 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_test_expand);
 		
-		loadDAOs();
 		expandList = (ExpandableListView) findViewById(R.id.ExpList);
 		spinner = (Spinner) findViewById(R.id.spinner);
 
+		loadDAOs();
 		loadSpinnerData();
 		loadStoreChooser();
 
@@ -140,10 +140,8 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 		displayList();
 	}
 
-	public void displayList() {
-
+	private void displayList() {
 		ArrayList<ExpandListGroup> groupList = new ArrayList<ExpandListGroup>();
-
 		for (String catName : sortedCatList) {
 			ExpandListGroup group = new ExpandListGroup();
 			group.setName(catName);
@@ -167,15 +165,18 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	}
 
 	public void btnAddItem(View view) {
-
 		EditText editText = (EditText) findViewById(R.id.editText2);
 		itemChild = editText.getText().toString();
-		editText.setText("");
-
-		itemCatDAO.create(new ItemCategory(itemChild, dropDownCat));
-		
-		if (!sortedCatList.contains(dropDownCat)) {
-			sortedCatList.add(dropDownCat);
+		if (!itemChild.isEmpty()) {
+			addNewItem(itemChild, dropDownCat);
+			editText.setText("");
+		}
+	}
+	
+	private void addNewItem(String itemName, String categoryName) {
+		itemCatDAO.create(new ItemCategory(itemChild, categoryName));
+		if (!sortedCatList.contains(categoryName)) {
+			sortedCatList.add(categoryName);
 		}
 		displayList();
 	}
