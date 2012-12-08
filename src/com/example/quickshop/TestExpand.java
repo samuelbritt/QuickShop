@@ -33,8 +33,8 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 
 	private List<Store> availableStores;
 	private Store chosenStore;
+	private List<String> sortedCatList;
 
-	ArrayList<String> sortedCatList = new ArrayList<String>();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -47,8 +47,13 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 		loadDAOs();
 		loadSpinnerData();
 		loadStoreChooser();
+		loadCategoryList();
 
 		displayList();
+	}
+	
+	private void loadCategoryList() {
+		sortedCatList = itemCatDAO.findCatNamesWithItems();
 	}
 	
 	private void loadDAOs() {
