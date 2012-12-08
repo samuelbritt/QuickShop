@@ -43,14 +43,28 @@ public class StoreTest extends TestCase {
 		Segment seg2122 = makeSegment(2, 1, 2, 2);
 		Segment seg2223 = makeSegment(2, 2, 2, 3);
 
-		Category bread =
-		        S.addCategory("Bread", new Segment[] { seg1011, seg1112 });
-		Category milk = S.addCategory("Milk", new Segment[] { seg1213 });
-		Category juice = S.addCategory("Juice", new Segment[] { seg0203 });
-		Category paper =
-		        S.addCategory("Paper", new Segment[] { seg2021, seg2122 });
-		Category cereal =
-		        S.addCategory("Cereal", new Segment[] { seg2122, seg2223 });
+		ArrayList<Segment> segList = new ArrayList<Segment>();
+		segList.add(seg1011);
+		segList.add(seg1112);
+		Category bread = S.addCategory("Bread", segList);
+		
+		segList.clear();
+		segList.add(seg1213);
+		Category milk = S.addCategory("Milk", segList);
+		
+		segList.clear();
+		segList.add(seg0203);
+		Category juice = S.addCategory("Juice", segList);
+		
+		segList.clear();
+		segList.add(seg2021);
+		segList.add(seg2122);
+		Category paper = S.addCategory("Paper", segList);
+		
+		segList.clear();
+		segList.add(seg2122);
+		segList.add(seg2223);
+		Category cereal = S.addCategory("Cereal", segList);
 
 		for (DualNode dest: S.getDualGraph().getNodes()) {
 			int distance = S.getDistance(S.getDualGraph().getSource(), (Node) dest);
