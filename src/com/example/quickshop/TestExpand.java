@@ -1,7 +1,6 @@
 package com.example.quickshop;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -20,7 +19,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 public class TestExpand extends Activity implements OnItemSelectedListener {
 	List<String> Cat = new ArrayList<String>();
@@ -60,9 +58,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 		itemCatDAO.open();
 
 		ExpandList = (ExpandableListView) findViewById(R.id.ExpList);
-		ExpListItems = SetStandardGroups();
-		ExpAdapter = new ExpandListAdapter(TestExpand.this, ExpListItems);
-		ExpandList.setAdapter(ExpAdapter);
+		SetStandardGroups();
 
 		Intent intent = getIntent();
 		message = intent.getStringExtra(TestExpand.EXTRA_MESSAGE);
@@ -153,7 +149,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 		return;
 	}
 
-	public ArrayList<ExpandListGroup> SetStandardGroups() {
+	public void SetStandardGroups() {
 
 		ArrayList<ExpandListGroup> groupList = new ArrayList<ExpandListGroup>();
 
@@ -176,7 +172,8 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 			}
 		}
 
-		return groupList;
+		ExpAdapter = new ExpandListAdapter(TestExpand.this, groupList);
+		ExpandList.setAdapter(ExpAdapter);
 	}
 
 	public void btnAddItem(View view) {
@@ -191,10 +188,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 		if (!sortedCatList.contains(dropDownCat)) {
 			sortedCatList.add(dropDownCat);
 		}
-		
-		ExpListItems = SetStandardGroups();
-		ExpAdapter = new ExpandListAdapter(TestExpand.this, ExpListItems);
-		ExpandList.setAdapter(ExpAdapter);
+		SetStandardGroups();
 	}
 
 	@Override

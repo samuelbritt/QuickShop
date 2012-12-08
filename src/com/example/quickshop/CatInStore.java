@@ -77,4 +77,11 @@ public class CatInStore {
 	public void setEndCoordY(int endCoordY){
 		this.endCoordY = endCoordY;
 	}
+	
+	@Override
+	public String toString() {
+		return categoryName + ", Store " + storeID +
+				"(" + startCoordX + ", " + startCoordY + ") " +
+				"(" + endCoordX + ", " + endCoordY + ") ";
+	}
 }

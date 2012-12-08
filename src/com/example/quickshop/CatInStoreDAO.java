@@ -98,13 +98,14 @@ public class CatInStoreDAO extends BaseDAO<CatInStore, Long> {
 				.getColumnIndex(CatInStoreTable._ID)));
 		catInStore.setCatName(cursor.getString(cursor
 				.getColumnIndex(CatInStoreTable.CATEGORY_NAME)));
-		catInStore.setStoreID(cursor.getColumnIndex(CatInStoreTable.STORE_ID));
+		catInStore.setStoreID(cursor.getInt(cursor.getColumnIndex(CatInStoreTable.STORE_ID)));
 		catInStore
-				.setStartCoordX(cursor.getColumnIndex(CatInStoreTable.STARTX));
+				.setStartCoordX(cursor.getInt(cursor.getColumnIndex(CatInStoreTable.STARTX)));
 		catInStore
-				.setStartCoordY(cursor.getColumnIndex(CatInStoreTable.STARTY));
-		catInStore.setEndCoordX(cursor.getColumnIndex(CatInStoreTable.ENDX));
-		catInStore.setEndCoordY(cursor.getColumnIndex(CatInStoreTable.ENDY));
+				.setStartCoordY(cursor.getInt(cursor.getColumnIndex(CatInStoreTable.STARTY)));
+		catInStore.setEndCoordX(cursor.getInt(cursor.getColumnIndex(CatInStoreTable.ENDX)));
+		catInStore.setEndCoordY(cursor.getInt(cursor.getColumnIndex(CatInStoreTable.ENDY)));
+		Log.d(TAG, "pulling " + catInStore.toString());
 		return catInStore;
 	}
 

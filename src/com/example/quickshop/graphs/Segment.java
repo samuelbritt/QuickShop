@@ -40,5 +40,10 @@ public class Segment {
 	public void setEnd(Coordinates end) {
 		this.end = end;
 	}
+	
+	@Override
+	public String toString() {
+		return "Segment: " + start.toString() + ", " + end.toString();
+	}
 
 }

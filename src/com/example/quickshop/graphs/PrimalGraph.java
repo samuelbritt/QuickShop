@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import android.util.Log;
+
 /**
  * Holds the primal graph data
  * 
@@ -17,6 +19,7 @@ public class PrimalGraph extends Graph<PrimalNode> {
 	private PrimalNode[][] aisleNodes;
 	private PrimalNode sourceNode;
 	private static final int edgeWeight = 1;
+	private static final String TAG = "QuickShop.PrimalGraph";
 
 	public PrimalGraph(int aisleCount, int nodesPerAisle, Coordinates startCoords) {
 		super();
@@ -83,6 +86,10 @@ public class PrimalGraph extends Graph<PrimalNode> {
 
 	/** returns the node at the specified coordinates */
 	public PrimalNode nodeAt(Coordinates coord) {
+		Log.d(TAG, "returning node at x = " + coord.getX() + ", y = " + coord.getY());
+		if (coord.getX() < 0) {
+			return getSource();
+		}
 		return aisleNodes[coord.getX()][coord.getY()];
 	}
 	

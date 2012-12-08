@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import android.util.Log;
+
 /**
  * Holds information about the store layout. Finds optimal paths through the
  * store.
@@ -16,6 +18,7 @@ public class GraphStore {
 	DualGraph D;
 	PathFinderAllPairsShortest<DualNode> APSP_Finder;
 	ArrayList<Category> categories;
+	private static final String TAG = "QuickShop.GraphStore";
 
 	public GraphStore(int aisleCount, int nodesPerAisle, Coordinates startCoords) {
 		P = new PrimalGraph(aisleCount, nodesPerAisle, startCoords);
@@ -34,6 +37,7 @@ public class GraphStore {
 	public Category addCategory(String categoryName, List<Segment> segments) {
 		Category category = new Category(categoryName);
 		addNodesFromAllSegments(category, segments);
+		this.categories.add(category);
 		return category;
 	}
 	
@@ -43,6 +47,7 @@ public class GraphStore {
 				return cat;
 			}
 		}
+		Log.d(TAG, "Cannot find category " + categoryName);
 		return null;
 	}
 
@@ -97,6 +102,11 @@ public class GraphStore {
 
 	private void updateDistances(DualNode source, List<Category> categories) {
 		for (Category cat : categories) {
+			if (cat == null) {
+				Log.d(TAG, "Category is NULL!!!");
+			} else {
+				Log.d(TAG, "updating distances for " + cat.getName());
+			}
 			cat.updateDistance(source, this.APSP_Finder);
 		}
 	}

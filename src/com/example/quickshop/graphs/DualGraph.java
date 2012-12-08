@@ -3,6 +3,8 @@ package com.example.quickshop.graphs;
 import java.util.Arrays;
 import java.util.List;
 
+import android.util.Log;
+
 /**
  * 
  */
@@ -16,6 +18,7 @@ public class DualGraph extends Graph<DualNode> {
 	private DualNode nodes[];
 	private DualNode source;
 	private int nodeCount;
+	private final String TAG = "QuickShop.DualGraph";
 
 	public DualGraph(PrimalGraph P) {
 		super();
@@ -73,6 +76,7 @@ public class DualGraph extends Graph<DualNode> {
 	 * by Segment
 	 */
 	public DualNode[] matchSegment(Segment segment) {
+		Log.d(TAG, "matching segment" + segment);
 		PrimalNode pstart = primalGraph.nodeAt(segment.getStart());
 		PrimalNode pend = primalGraph.nodeAt(segment.getEnd());
 		DualNode[] arr = new DualNode[2];
