@@ -34,8 +34,8 @@ public class GraphStore {
 		return D;
 	}
 
-	public Category addCategory(String categoryName, List<Segment> segments) {
-		Category category = new Category(categoryName);
+	public Category addCategory(String catName, List<Segment> segments) {
+		Category category = new Category(catName);
 		addNodesFromAllSegments(category, segments);
 		this.categories.add(category);
 		return category;

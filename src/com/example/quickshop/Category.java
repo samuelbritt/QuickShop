@@ -1,13 +1,17 @@
 package com.example.quickshop;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Category {
 	long _id;
 	String categoryName;
 	boolean anchorPoint;
+	ArrayList<ItemCategory> items;
 	
 	
 	public Category(){
-		
+		items = new ArrayList<ItemCategory>();
 	}
 	
 	public Category(String categoryName, boolean anchorPoint){
@@ -37,5 +41,21 @@ public class Category {
 	
 	public void setAnchPoint(boolean anchorPoint){
 		this.anchorPoint = anchorPoint;
+	}
+	
+	public String toString() {
+		return categoryName + "(str)";
+	}
+	
+	public void addItem(ItemCategory item) {
+		items.add(item);
+	}
+	
+	public List<ItemCategory> getItems() {
+		return items;
+	}
+	
+	public int itemCount() {
+		return items.size();
 	}
 }
