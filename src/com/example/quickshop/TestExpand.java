@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
@@ -17,7 +18,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.Spinner;
 
@@ -55,22 +55,24 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 		loadExistingData();
 		
 		expandList.setOnItemLongClickListener(new OnItemLongClickListener() {
-		    @Override
-		    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-		        if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-		            int groupPosition = ExpandableListView.getPackedPositionGroup(id);
-		            int childPosition = ExpandableListView.getPackedPositionChild(id);
-
-		            // You now have everything that you would as if this was an OnChildClickListener() 
-		            // Add your logic here.
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+			                               int position, long id) {
+				int positionType = ExpandableListView.getPackedPositionType(id);
+				int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+				int childPosition = ExpandableListView.getPackedPositionChild(id);
+				if (positionType == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
 					ExpAdapter.deleteItem(groupPosition, childPosition);
-
-		            // Return true as we are handling the event.
-		            return true;
-		        }
-
-		        return false;
-		    }
+					return true;
+				} else if (positionType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+					Category group = (Category) ExpAdapter.getGroup(groupPosition);
+					Log.d(TAG, "Long-presed a group " + group.getName());
+					DialogFragment dialog = new ChooseAnchorDialog();
+					dialog.show(getFragmentManager(), "ChooseAnchor");
+					return true;
+				}
+				return false;
+			}
 		});
 
 		expandList.setOnGroupClickListener(new OnGroupClickListener() {
