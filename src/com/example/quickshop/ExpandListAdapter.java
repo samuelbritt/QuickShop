@@ -3,8 +3,8 @@ package com.example.quickshop;
 
 import java.util.ArrayList;
 
-import com.example.quickshop.R;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,28 +13,53 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ExpandListAdapter extends BaseExpandableListAdapter{
-	
+	private static final String TAG = "QuickShop.ExpandListAdapter";
 	private Context context;
-	private ArrayList<ExpandListGroup> groups;
-	public ExpandListAdapter(Context context, ArrayList<ExpandListGroup> groups) {
+	private ItemCategoryDAO itemCatDAO;
+	private ArrayList<Category> categories;
+
+	public ExpandListAdapter(Context context) {
+		super();
 		this.context = context;
-		this.groups = groups;
+		this.categories = new ArrayList<Category>();
+		itemCatDAO = new ItemCategoryDAO(context);
+		itemCatDAO.open();
 	}
 	
-	
-	public void addItem(ExpandListChild item, ExpandListGroup group) {
-		if (!groups.contains(group)) {
-			groups.add(group);
+	public void addCategoryIfNew(Category category) {
+		if (!categories.contains(category)) {
+			categories.add(category);
 		}
-		int index = groups.indexOf(group);
-		ArrayList<ExpandListChild> ch = groups.get(index).getItems();
-		ch.add(item);
-		groups.get(index).setItems(ch);
 	}
+	
+	public void addItem(ItemCategory itc, Category category) {
+		category.addItem(itc);
+		addCategoryIfNew(category);
+		notifyDataSetChanged();
+	}
+	
+	public void addNewItem(String itemName, Category category) {
+		ItemCategory itc = new ItemCategory(itemName, category.getName());
+		Long id = itemCatDAO.create(itc);
+		itc.setID(id);
+		addItem(itc, category);
+	}
+	
+	public void deleteItem(int groupPosition, int childPosition) {
+		ItemCategory itc = (ItemCategory) getChild(groupPosition, childPosition);
+		Category group = (Category) getGroup(groupPosition);
+		Log.d(TAG, "Deleting: " + itc.getCatName() + " - " + itc.getItemName());
+		itemCatDAO.delete(itc);
+		group.removeAt(childPosition);
+		if (group.isEmpty()) {
+			categories.remove(group);
+		}
+		
+		notifyDataSetChanged();
+	}
+
 	public Object getChild(int groupPosition, int childPosition) {
-		// TODO Auto-generated method stub
-		ArrayList<ExpandListChild> chList = groups.get(groupPosition).getItems();
-		return chList.get(childPosition);
+		return categories.get(groupPosition).getItems().get(childPosition);
 	}
 
 	public long getChildId(int groupPosition, int childPosition) {
@@ -44,34 +69,29 @@ public class ExpandListAdapter extends BaseExpandableListAdapter{
 
 	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View view,
 			ViewGroup parent) {
-		ExpandListChild child = (ExpandListChild) getChild(groupPosition, childPosition);
+		ItemCategory item = (ItemCategory) getChild(groupPosition, childPosition);
 		if (view == null) {
 			LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			view = infalInflater.inflate(R.layout.expandlist_child_item, null);
 		}
 		TextView tv = (TextView) view.findViewById(R.id.tvChild);
-		tv.setText(child.getName().toString());
-		tv.setTag(child.getTag());
-		// TODO Auto-generated method stub
+		tv.setText(item.getItemName());
+		Log.d(TAG, "Getting Child view");
 		return view;
 	}
 
 	public int getChildrenCount(int groupPosition) {
-		// TODO Auto-generated method stub
-		ArrayList<ExpandListChild> chList = groups.get(groupPosition).getItems();
-
-		return chList.size();
-
+		return categories.get(groupPosition).itemCount();
 	}
 
 	public Object getGroup(int groupPosition) {
 		// TODO Auto-generated method stub
-		return groups.get(groupPosition);
+		return categories.get(groupPosition);
 	}
 
 	public int getGroupCount() {
 		// TODO Auto-generated method stub
-		return groups.size();
+		return categories.size();
 	}
 
 	public long getGroupId(int groupPosition) {
@@ -80,14 +100,15 @@ public class ExpandListAdapter extends BaseExpandableListAdapter{
 	}
 
 	public View getGroupView(int groupPosition, boolean isExpanded, View view,
-			ViewGroup parent) {
-		ExpandListGroup group = (ExpandListGroup) getGroup(groupPosition);
+	                         ViewGroup parent) {
+		Category category = (Category) getGroup(groupPosition);
+		Log.d(TAG, "getting group view for category " + category);
 		if (view == null) {
 			LayoutInflater inf = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			view = inf.inflate(R.layout.expandlist_group_item, null);
 		}
 		TextView tv = (TextView) view.findViewById(R.id.tvGroup);
-		tv.setText(group.getName());
+		tv.setText(category.getName());
 		
 		ImageView iv = (ImageView) view.findViewById(R.id.ivGroup);
 		setGroupExpandIcon(iv, isExpanded);
@@ -108,6 +129,20 @@ public class ExpandListAdapter extends BaseExpandableListAdapter{
 	public boolean isChildSelectable(int arg0, int arg1) {
 		// TODO Auto-generated method stub
 		return true;
+	}
+	
+	public void sortCategories(Store chosenStore) {
+		CatInStoreDAO catInStoreDAO = new CatInStoreDAO(this.context);
+		catInStoreDAO.open();
+		CategoryDAO categoryDAO = new CategoryDAO(this.context);
+		categoryDAO.open();
+		GraphStoreAdapter adapter =
+		        new GraphStoreAdapter(chosenStore, categoryDAO, catInStoreDAO);
+		adapter.sortCategories(categories);
+
+		catInStoreDAO.close();
+		categoryDAO.close();
+		this.notifyDataSetChanged();
 	}
 
 }
