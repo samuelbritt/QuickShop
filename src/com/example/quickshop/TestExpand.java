@@ -12,10 +12,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
+import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.Spinner;
 
 public class TestExpand extends Activity implements OnItemSelectedListener {
@@ -33,7 +36,6 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	private Store chosenStore;
 	List<Category> allCategories;
 	private Category chosenCategory;
-	private List<String> sortedCatList;
 
 
 	@Override
@@ -50,17 +52,43 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 		loadDAOs();
 		loadSpinnerData();
 		loadStoreChooser();
-		loadCategoryList();
 		loadExistingData();
 		
-		ExpAdapter.notifyDataSetChanged();
+		expandList.setOnItemLongClickListener(new OnItemLongClickListener() {
+		    @Override
+		    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+		        if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+		            int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+		            int childPosition = ExpandableListView.getPackedPositionChild(id);
+
+		            // You now have everything that you would as if this was an OnChildClickListener() 
+		            // Add your logic here.
+					ExpAdapter.deleteItem(groupPosition, childPosition);
+
+		            // Return true as we are handling the event.
+		            return true;
+		        }
+
+		        return false;
+		    }
+		});
+
+		expandList.setOnGroupClickListener(new OnGroupClickListener() {
+			
+			@Override
+			public boolean onGroupClick(ExpandableListView parent, View v,
+			                            int groupPosition, long id) {
+				Log.d(TAG, "Clicked a group!!!");
+				return false;
+			}
+		});
 	}
 	
 	private void loadExistingData() {
-		List<String> catNames = itemCatDAO.findCatNamesWithItems();
-		for (String name : catNames) {
-			Category cat = getCategoryFromName(name);
-			ExpAdapter.addCategoryIfNew(cat);
+		List<ItemCategory> itemCats = itemCatDAO.findAll();
+		for (ItemCategory itc : itemCats) {
+			Category cat = getCategoryFromName(itc.getCatName());
+			ExpAdapter.addItem(itc, cat);
 		}
 	}
 	
@@ -71,10 +99,6 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 			}
 		}
 		return null;
-	}
-	
-	private void loadCategoryList() {
-		sortedCatList = itemCatDAO.findCatNamesWithItems();
 	}
 	
 	private void loadDAOs() {
@@ -155,13 +179,11 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 		EditText editText = (EditText) findViewById(R.id.editText2);
 		String itemChild = editText.getText().toString();
 		if (!itemChild.isEmpty()) {
-			ExpAdapter.addItem(itemChild, chosenCategory);
-			ExpAdapter.notifyDataSetChanged();
+			ExpAdapter.addNewItem(itemChild, chosenCategory);
 			editText.setText("");
 			
 		}
 	}
-
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position,

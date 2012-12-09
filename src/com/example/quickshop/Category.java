@@ -44,11 +44,15 @@ public class Category {
 	}
 	
 	public String toString() {
-		return categoryName + "(str)";
+		return categoryName;
 	}
 	
 	public void addItem(ItemCategory item) {
 		items.add(item);
+	}
+	
+	public void removeAt(int index) {
+		items.remove(index);
 	}
 	
 	public List<ItemCategory> getItems() {
@@ -57,5 +61,9 @@ public class Category {
 	
 	public int itemCount() {
 		return items.size();
+	}
+	
+	public boolean isEmpty() {
+		return items.isEmpty();
 	}
 }

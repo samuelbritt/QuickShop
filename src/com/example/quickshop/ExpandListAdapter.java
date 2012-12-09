@@ -33,14 +33,29 @@ public class ExpandListAdapter extends BaseExpandableListAdapter{
 	}
 	
 	public void addItem(ItemCategory itc, Category category) {
-		itemCatDAO.create(itc);
 		category.addItem(itc);
 		addCategoryIfNew(category);
+		notifyDataSetChanged();
 	}
 	
-	public void addItem(String itemName, Category category) {
+	public void addNewItem(String itemName, Category category) {
 		ItemCategory itc = new ItemCategory(itemName, category.getName());
+		Long id = itemCatDAO.create(itc);
+		itc.setID(id);
 		addItem(itc, category);
+	}
+	
+	public void deleteItem(int groupPosition, int childPosition) {
+		ItemCategory itc = (ItemCategory) getChild(groupPosition, childPosition);
+		Category group = (Category) getGroup(groupPosition);
+		Log.d(TAG, "Deleting: " + itc.getCatName() + " - " + itc.getItemName());
+		itemCatDAO.delete(itc);
+		group.removeAt(childPosition);
+		if (group.isEmpty()) {
+			categories.remove(group);
+		}
+		
+		notifyDataSetChanged();
 	}
 
 	public Object getChild(int groupPosition, int childPosition) {
@@ -61,6 +76,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter{
 		}
 		TextView tv = (TextView) view.findViewById(R.id.tvChild);
 		tv.setText(item.getItemName());
+		Log.d(TAG, "Getting Child view");
 		return view;
 	}
 
