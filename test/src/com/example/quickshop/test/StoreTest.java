@@ -2,17 +2,18 @@ package com.example.quickshop.test;
 
 import java.util.ArrayList;
 
-import com.example.quickshop.graphs.DualNode;
-import com.example.quickshop.graphs.Node;
-import com.example.quickshop.graphs.GraphStore;
-import com.example.quickshop.graphs.Category;
-import com.example.quickshop.graphs.Segment;
-import com.example.quickshop.graphs.Coordinates;
-
 import junit.framework.TestCase;
 
+import com.example.quickshop.graphs.Coordinates;
+import com.example.quickshop.graphs.DualNode;
+import com.example.quickshop.graphs.GraphCategory;
+import com.example.quickshop.graphs.GraphCategoryFactory;
+import com.example.quickshop.graphs.GraphStore;
+import com.example.quickshop.graphs.Node;
+import com.example.quickshop.graphs.Segment;
+
 public class StoreTest extends TestCase {
-	private GraphStore S;
+	private GraphStore<GraphCategory> S;
 	private final static int aisleCount = 3;
 	private final static int nodesPerAisle = 4;
 	private final static Coordinates startCoords = new Coordinates(0,0);
@@ -24,7 +25,8 @@ public class StoreTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		S = new GraphStore(aisleCount, nodesPerAisle, startCoords);
+		GraphCategoryFactory fact = new GraphCategoryFactory();
+		S = new GraphStore<GraphCategory>(aisleCount, nodesPerAisle, startCoords, fact);
 		coords = new Coordinates[aisleCount][nodesPerAisle];
 		for (int aisle = 0; aisle < aisleCount; aisle++) {
 			for (int node = 0; node < nodesPerAisle; node++) {
@@ -46,32 +48,32 @@ public class StoreTest extends TestCase {
 		ArrayList<Segment> segList = new ArrayList<Segment>();
 		segList.add(seg1011);
 		segList.add(seg1112);
-		Category bread = S.addCategory("Bread", segList);
+		GraphCategory bread = S.addCategory("Bread", segList);
 		
 		segList.clear();
 		segList.add(seg1213);
-		Category milk = S.addCategory("Milk", segList);
+		GraphCategory milk = S.addCategory("Milk", segList);
 		
 		segList.clear();
 		segList.add(seg0203);
-		Category juice = S.addCategory("Juice", segList);
+		GraphCategory juice = S.addCategory("Juice", segList);
 		
 		segList.clear();
 		segList.add(seg2021);
 		segList.add(seg2122);
-		Category paper = S.addCategory("Paper", segList);
+		GraphCategory paper = S.addCategory("Paper", segList);
 		
 		segList.clear();
 		segList.add(seg2122);
 		segList.add(seg2223);
-		Category cereal = S.addCategory("Cereal", segList);
+		GraphCategory cereal = S.addCategory("Cereal", segList);
 
 		for (DualNode dest: S.getDualGraph().getNodes()) {
 			int distance = S.getDistance(S.getDualGraph().getSource(), (Node) dest);
 			System.out.println("d = " + distance + ", " + dest.toString());
 		}
 
-		ArrayList<Category> catList = new ArrayList<Category>();
+		ArrayList<GraphCategory> catList = new ArrayList<GraphCategory>();
 
 		catList.add(bread);
 		catList.add(milk);

@@ -2,6 +2,7 @@ package com.example.quickshop;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.util.Log;
@@ -131,13 +132,13 @@ public class ExpandListAdapter extends BaseExpandableListAdapter{
 		return true;
 	}
 	
-	public void sortCategories(Store chosenStore) {
+	public void sortCategories(Store chosenStore, List<Category> allCategories) {
 		CatInStoreDAO catInStoreDAO = new CatInStoreDAO(this.context);
 		catInStoreDAO.open();
 		CategoryDAO categoryDAO = new CategoryDAO(this.context);
 		categoryDAO.open();
 		GraphStoreAdapter adapter =
-		        new GraphStoreAdapter(chosenStore, categoryDAO, catInStoreDAO);
+		        new GraphStoreAdapter(this.context, chosenStore, allCategories);
 		adapter.sortCategories(categories);
 
 		catInStoreDAO.close();

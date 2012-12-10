@@ -3,7 +3,9 @@ package com.example.quickshop;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.example.quickshop.graphs.Coordinates;
@@ -11,80 +13,93 @@ import com.example.quickshop.graphs.GraphStore;
 import com.example.quickshop.graphs.Segment;
 
 public class GraphStoreAdapter {
-
-	private com.example.quickshop.Store store;
-	private CategoryDAO catDAO;
-	private CatInStoreDAO catInStoreDAO;
+	private Context context;
+	private Store store;
+	private List<GraphCategoryAdapter> allGraphCategoryAdapters;
+	private List<Category> allCategories;
 	private static final String TAG = "QuickShop.GraphStoreAdapter";
 
-	public GraphStoreAdapter(com.example.quickshop.Store store,
-	        CategoryDAO catDAO, CatInStoreDAO catInStoreDAO) {
+	public GraphStoreAdapter(Context context, Store store,
+			List<Category> allCategories) {
+		this.context = context;
 		this.store = store;
-		this.catDAO = catDAO;
-		this.catInStoreDAO = catInStoreDAO;
+		this.allCategories = allCategories;
+		this.allGraphCategoryAdapters = new ArrayList<GraphCategoryAdapter>();
 	}
 
-	public GraphStore createGraphStore() {
+	public GraphStore<GraphCategoryAdapter> createGraphStore() {
+		Log.i(TAG, "Creating new GraphStore corresponding to " + store.getName());
 		Coordinates startCoords = new Coordinates(store.getStoreStartCoordX(),
-		                                          store.getStoreStartCoordY());
-		GraphStore gstore =
-		        new GraphStore(store.getAisleCount(),
-		                       store.getNodesPerAisle(), startCoords);
+				store.getStoreStartCoordY());
+		GraphCatAdapterFactory gCatFactory = new GraphCatAdapterFactory();
+		GraphStore<GraphCategoryAdapter> gstore = new GraphStore<GraphCategoryAdapter>(
+				store.getAisleCount(), store.getNodesPerAisle(), startCoords,
+				gCatFactory);
 
-		List<Category> catList = catDAO.findAll();
-		HashMap<String, ArrayList<Segment>> map =
-		        new HashMap<String, ArrayList<Segment>>();
-		for (Category cat : catList) {
+		Map<String, ArrayList<Segment>> map = gatherAllSegmentsByCatName();
+
+		// add GraphCategoryAdapters to store, along with setting the normal
+		// Category for each new GraphCategory
+		for (Category cat : allCategories) {
+			GraphCategoryAdapter gca = (GraphCategoryAdapter) gstore
+					.addCategory(cat.getName(), map.get(cat.getName()));
+			gca.setCategory(cat);
+			allGraphCategoryAdapters.add(gca);
+		}
+
+		return gstore;
+	}
+	
+	private Map<String, ArrayList<Segment>> gatherAllSegmentsByCatName() {
+		Map<String, ArrayList<Segment>> map = new HashMap<String, ArrayList<Segment>>();
+
+		// init hash map
+		for (Category cat : allCategories) {
 			map.put(cat.getName(), new ArrayList<Segment>());
 		}
 
-		List<CatInStore> catsInStore =
-		        catInStoreDAO.findAllByStoreID(store.getID());
+		// add all segments for each category
+		List<CatInStore> catsInStore = getCatsInStore(store.getID());
 		for (CatInStore catInStore : catsInStore) {
 			ArrayList<Segment> arr = map.get(catInStore.getCatName());
 			arr.add(new Segment(catInStore.getStartCoordX(),
-			                    catInStore.getStartCoordY(),
-			                    catInStore.getEndCoordX(),
-			                    catInStore.getEndCoordY()));
+								catInStore.getStartCoordY(),
+								catInStore.getEndCoordX(),
+								catInStore.getEndCoordY()));
 		}
-
-		for (String catName : map.keySet()) {
-			gstore.addCategory(catName, map.get(catName));
-		}
-		return gstore;
+		return map;
 	}
 
-	public void sortCategories(List<Category> categories) {
-		GraphStore gstore = createGraphStore();
-		List<String> catNames = cats2names(categories);
-		gstore.optimalPathSortByName(catNames);
-		names2cats(catNames, categories);
+	private List<CatInStore> getCatsInStore(long storeID) {
+		CatInStoreDAO catInStoreDAO = new CatInStoreDAO(context);
+		catInStoreDAO.open();
+		List<CatInStore> catsInStore = catInStoreDAO.findAllByStoreID(storeID);
+		catInStoreDAO.close();
+		return catsInStore;
+	}
+
+	public void sortCategories(List<Category> categoriesToSort) {
+		GraphStore<GraphCategoryAdapter> gstore = createGraphStore();
+		List<GraphCategoryAdapter> gcasToSort = catsToGCAs(categoriesToSort);
+		gstore.optimalPathSort(gcasToSort);
+		GCAsToCats(categoriesToSort, gcasToSort);
 	}
 	
-	private List<String> cats2names(List<Category> categories) {
-		List<String> res = new ArrayList<String>(categories.size());
-		for (Category cat: categories) {
-			res.add(cat.getName());
+	private List<GraphCategoryAdapter> catsToGCAs(List<Category> cats) {
+		List<GraphCategoryAdapter> gcas = new ArrayList<GraphCategoryAdapter>();
+		for (Category cat : cats) {
+			for (GraphCategoryAdapter gca: allGraphCategoryAdapters) {
+				if (gca.getCategory() == cat) {
+					gcas.add(gca);
+				}
+			}
 		}
-		return res;
+		return gcas;
 	}
 	
-	private void names2cats(List<String> catNames, List<Category> categories) {
-		for (int i = 0; i < catNames.size(); i++) {
-	        String name = catNames.get(i);
-	        for (int j = i; j < categories.size(); j++) {
-	            Category cat = categories.get(j);
-	        	if (cat.getName().equals(name)) {
-	        		swap(categories, i ,j);
-	        		continue;
-	        	}
-            }
-        }
-	}
-	
-	private void swap(List<Category> list, int i, int j) {
-		Category tmp = list.get(i);
-		list.set(i, list.get(j));
-		list.set(j, tmp);
+	private void GCAsToCats(List<Category> cats, List<GraphCategoryAdapter> gcats) {
+		for (int i = 0; i < gcats.size(); i++) {
+			cats.set(i, gcats.get(i).getCategory());
+		}
 	}
 }

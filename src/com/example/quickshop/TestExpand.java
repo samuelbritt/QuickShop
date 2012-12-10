@@ -168,7 +168,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener,
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case R.id.refresh_sort:
-			ExpAdapter.sortCategories(chosenStore);
+			ExpAdapter.sortCategories(chosenStore, allCategories);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -180,7 +180,6 @@ public class TestExpand extends Activity implements OnItemSelectedListener,
 		if (!itemChild.isEmpty()) {
 			ExpAdapter.addNewItem(itemChild, categoryInSpinner);
 			editText.setText("");
-			
 		}
 	}
 

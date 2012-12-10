@@ -13,17 +13,20 @@ import android.util.Log;
  * @author sam
  * 
  */
-public class GraphStore {
-	PrimalGraph P;
-	DualGraph D;
-	PathFinderAllPairsShortest<DualNode> APSP_Finder;
-	ArrayList<Category> categories;
+public class GraphStore<T extends IGraphCategory> {
+	private PrimalGraph P;
+	private DualGraph D;
+	private PathFinderAllPairsShortest<DualNode> APSP_Finder;
+	private ArrayList<T> categories;
+	private IGraphCategoryFactory<T> graphCatFactory;
 	private static final String TAG = "QuickShop.GraphStore";
 
-	public GraphStore(int aisleCount, int nodesPerAisle, Coordinates startCoords) {
+	public GraphStore(int aisleCount, int nodesPerAisle,
+			Coordinates startCoords, IGraphCategoryFactory<T> graphCatFactory) {
 		P = new PrimalGraph(aisleCount, nodesPerAisle, startCoords);
 		D = new DualGraph(P);
-		categories = new ArrayList<Category>();
+		categories = new ArrayList<T>();
+		this.graphCatFactory = graphCatFactory;
 		
 		DijkstraFactory<DualNode> dijFact = new DijkstraFactory<DualNode>();
 		APSP_Finder = new PathFinderAllPairsShortest<DualNode>(D, dijFact);
@@ -33,16 +36,9 @@ public class GraphStore {
 	public DualGraph getDualGraph() {
 		return D;
 	}
-
-	public Category addCategory(String catName, List<Segment> segments) {
-		Category category = new Category(catName);
-		addNodesFromAllSegments(category, segments);
-		this.categories.add(category);
-		return category;
-	}
 	
-	public Category getCategory(String categoryName) {
-		for (Category cat: this.categories) {
+	public T getCategory(String categoryName) {
+		for (T cat: this.categories) {
 			if (cat.getName().equals(categoryName)) {
 				return cat;
 			}
@@ -51,13 +47,20 @@ public class GraphStore {
 		return null;
 	}
 
-	private void addNodesFromAllSegments(Category category, List<Segment> segments) {
+	public T addCategory(String catName, List<Segment> segments) {
+		T category = graphCatFactory.makeGraphCategory(catName);
+		addNodesFromAllSegments(category, segments);
+		this.categories.add(category);
+		return category;
+	}
+
+	private void addNodesFromAllSegments(T category, List<Segment> segments) {
 		for (Segment segment : segments) {
 			addNodeFromSegment(category, segment);
 		}
 	}
 
-	private void addNodeFromSegment(Category category, Segment segment) {
+	private void addNodeFromSegment(T category, Segment segment) {
 		for (DualNode node : D.matchSegment(segment)) {
 			category.addNode(node);
 		}
@@ -69,30 +72,17 @@ public class GraphStore {
 	}
 	
 	/** returns path String from source the category*/
-	public String getPathString(DualNode source, Category cat) {
+	public String getPathString(DualNode source, T cat) {
 		return cat.getPathString(source, APSP_Finder);
-	}
-	
-	/** Given a list of category names, sorts the list in place */
-	public void optimalPathSortByName(List<String> categoryNames) {
-		ArrayList<Category> categories = new ArrayList<Category>();
-		for (String name : categoryNames) {
-			categories.add(this.getCategory(name));
-		}
-		optimalPathSort(categories);
-		
-		for (int i = 0; i < categoryNames.size(); i++) {
-			categoryNames.set(i, categories.get(i).getName());
-		}
 	}
 
 	/**
 	 * Sorts `targets` in place. The resulting sort is optimal for this store.
 	 */
-	public void optimalPathSort(List<Category> categories) {
+	public void optimalPathSort(List<T> categories) {
 		DualNode start = (DualNode) D.getSource();
 		for (int i = 0; i < categories.size(); i++) {
-			List<Category> sublist = categories.subList(i, categories.size());
+			List<T> sublist = categories.subList(i, categories.size());
 			updateDistances(start, sublist);
 			Collections.sort(sublist);
 			System.out.println("Min: " + categories.get(i));
@@ -100,8 +90,8 @@ public class GraphStore {
 		}
 	}
 
-	private void updateDistances(DualNode source, List<Category> categories) {
-		for (Category cat : categories) {
+	private void updateDistances(DualNode source, List<T> categories) {
+		for (T cat : categories) {
 			if (cat == null) {
 				Log.d(TAG, "Category is NULL!!!");
 			} else {
