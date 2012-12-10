@@ -61,7 +61,7 @@ public class CategoryDAO extends BaseDAO<Category, Long> {
 		List<Category> categories = new ArrayList<Category>();
 		String[] allColumns = null; // get all columns
 		Cursor cursor = db.query(CategoryTable.TABLE_NAME,
-		                         allColumns, null, null, null, null, null);
+		                         allColumns, null, null, null, null, CategoryTable.NAME);
 
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
