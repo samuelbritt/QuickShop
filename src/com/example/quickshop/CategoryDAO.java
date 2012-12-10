@@ -28,7 +28,7 @@ public class CategoryDAO extends BaseDAO<Category, Long> {
 	public void update(Category cat) {
 		ContentValues values = extractContentExceptID(cat);
 		long id = cat.getID();
-		db.update(CategoryTable.TABLE_NAME, values, CategoryTable.NAME + " = " + id,
+		db.update(CategoryTable.TABLE_NAME, values, CategoryTable._ID + " = " + id,
 		          null);
 	}
 	
@@ -52,6 +52,7 @@ public class CategoryDAO extends BaseDAO<Category, Long> {
 		Cursor cursor = db.query(CategoryTable.TABLE_NAME,
 		                         allColumns, CategoryTable._ID + " = " + id,
 		                         null, null, null, null);
+		cursor.moveToFirst();
 		return cursorToCategory(cursor);
 	}
 

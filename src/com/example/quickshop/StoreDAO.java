@@ -58,6 +58,7 @@ public class StoreDAO extends BaseDAO<Store, Long> {
 		Cursor cursor = db.query(StoreTable.TABLE_NAME,
 		                         allColumns, StoreTable._ID + " = " + id,
 		                         null, null, null, null);
+		cursor.moveToFirst();
 		return cursorToStore(cursor);
 	}
 

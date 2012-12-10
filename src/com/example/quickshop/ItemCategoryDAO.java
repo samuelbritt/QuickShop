@@ -48,6 +48,7 @@ public class ItemCategoryDAO extends BaseDAO<ItemCategory, Long> {
 		Cursor cursor = db.query(ItemCategoryTable.TABLE_NAME,
 		                         ALL_COLUMNS, ItemCategoryTable._ID + " = " + id,
 		                         null, null, null, null);
+		cursor.moveToFirst();
 		return cursorToIC(cursor);
 	}
 

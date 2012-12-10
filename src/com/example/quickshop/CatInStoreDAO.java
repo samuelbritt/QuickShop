@@ -57,6 +57,7 @@ public class CatInStoreDAO extends BaseDAO<CatInStore, Long> {
 		String[] allColumns = null; // get all columns
 		Cursor cursor = db.query(CatInStoreTable.TABLE_NAME, allColumns,
 				CatInStoreTable._ID + " = " + id, null, null, null, null);
+		cursor.moveToFirst();
 		return cursorToStore(cursor);
 	}
 

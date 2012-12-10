@@ -12,7 +12,7 @@
 	<string name="refresh_sort">Refresh</string>
 	<string name="choose_store">Choose Store</string>
 	<string name="addItem">Add Item</string>
-	<string name="keep_at_bottom">Keep this category at bottom?</string>
-	
+	<string name="keep_at_bottom_title">Force category to bottom</string>
+	<string name="keep_at_bottom_option">Keep at bottom?</string>
     
 </resources>

@@ -18,10 +18,10 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.Spinner;
 
-public class TestExpand extends Activity implements OnItemSelectedListener {
+public class TestExpand extends Activity implements OnItemSelectedListener,
+		ChooseAnchorDialog.Listener {
 	public final static String EXTRA_MESSAGE = "com.example.quickshop.MESSAGE";
 	private final String TAG = "QuickShop";
 
@@ -35,7 +35,8 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	private List<Store> allStores;
 	private Store chosenStore;
 	List<Category> allCategories;
-	private Category chosenCategory;
+	private Category categoryInSpinner;
+	private Category categoryInDialog;
 
 
 	@Override
@@ -65,25 +66,25 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 					ExpAdapter.deleteItem(groupPosition, childPosition);
 					return true;
 				} else if (positionType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-					Category group = (Category) ExpAdapter.getGroup(groupPosition);
-					Log.d(TAG, "Long-presed a group " + group.getName());
-					DialogFragment dialog = new ChooseAnchorDialog();
+					categoryInDialog = (Category) ExpAdapter.getGroup(groupPosition);
+					ChooseAnchorDialog dialog = new ChooseAnchorDialog();
+					dialog.setChecked(categoryInDialog.getAnchPoint());
 					dialog.show(getFragmentManager(), "ChooseAnchor");
 					return true;
 				}
 				return false;
 			}
 		});
-
-		expandList.setOnGroupClickListener(new OnGroupClickListener() {
-			
-			@Override
-			public boolean onGroupClick(ExpandableListView parent, View v,
-			                            int groupPosition, long id) {
-				Log.d(TAG, "Clicked a group!!!");
-				return false;
-			}
-		});
+	}
+	
+	public void onDialogPositiveClick(DialogFragment dialog) {
+		categoryInDialog.setAnchPoint(((ChooseAnchorDialog) dialog).isChecked());
+		categoryDAO.update(categoryInDialog);
+		Log.d(TAG, "Cateogry " + categoryInDialog + ", anchor set to " + categoryInDialog.getAnchPoint());
+	}
+	
+	public void onDialogNegativeClick(DialogFragment dialog) {
+		return;
 	}
 	
 	private void loadExistingData() {
@@ -167,21 +168,17 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case R.id.refresh_sort:
-			sort_categories();
+			ExpAdapter.sortCategories(chosenStore);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	private void sort_categories() {
-		ExpAdapter.sortCategories(chosenStore);
 	}
 
 	public void btnAddItem(View view) {
 		EditText editText = (EditText) findViewById(R.id.editText2);
 		String itemChild = editText.getText().toString();
 		if (!itemChild.isEmpty()) {
-			ExpAdapter.addNewItem(itemChild, chosenCategory);
+			ExpAdapter.addNewItem(itemChild, categoryInSpinner);
 			editText.setText("");
 			
 		}
@@ -190,7 +187,7 @@ public class TestExpand extends Activity implements OnItemSelectedListener {
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
-		chosenCategory = (Category) parent.getItemAtPosition(position);
+		categoryInSpinner = (Category) parent.getItemAtPosition(position);
 	}
 
 	@Override
